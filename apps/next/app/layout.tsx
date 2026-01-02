@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Empty",
   description: "This is an empty project",
