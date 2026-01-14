@@ -6,6 +6,6 @@ export const env = createEnv({
     NEXT_PUBLIC_BASE_URL: z.string(),
   },
   experimental__runtimeEnv: {
-    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL!,
   },
 });
