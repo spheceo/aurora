@@ -12,6 +12,7 @@
   "dependencies": {
     "@orpc/client": "^1.13.2",
     "@orpc/server": "^1.13.2",
+    "@t3-oss/env-core": "^0.13.10",
     "@t3-oss/env-nextjs": "^0.13.10",
     "next": "16.1.1",
     "react": "19.2.3",
