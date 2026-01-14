@@ -5,6 +5,8 @@ const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
   : "http://localhost:3000";
 
+console.log(`Base ${baseUrl}`)
+
 export const env = createEnv({
   client: {
     NEXT_PUBLIC_BASE_URL: z.url(),
