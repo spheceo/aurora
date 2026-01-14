@@ -74,7 +74,7 @@ export default forwardRef(function Hero(
             <div className="space-y-3">
               <p className="font-medium">[Crystals]</p>
               <h1 className="w-170 text-7xl font-medium">
-                Earth’s Beauty, Captured in Crystal.
+                Earth’s Nigga, Captured in Crystal.
               </h1>
               <div className="flex items-center gap-3 text-[#8D8D8D] mt-4">
                 <LuMouse />
