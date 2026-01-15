@@ -7,61 +7,74 @@ import { useGSAP } from "@gsap/react";
 import Image from "next/image";
 import Hero from "./hero";
 
-gsap.registerPlugin(ScrollTrigger);
+const products = [
+  {
+    key: 1,
+    label: "Chrysoberyl Cats Eye",
+    description: " - Best for Anxiety",
+    price: "R450,00",
+    previous_price: "",
+    image: "/signaturepicks/1.png",
+  },
+  {
+    key: 2,
+    label: "Crystal trees",
+    description: " - Protection and grounding",
+    price: "R350,00",
+    previous_price: "R650,00",
+    image: "/signaturepicks/2.png",
+  },
+  {
+    key: 3,
+    label: "Blue Calcite Stand",
+    description: " - For LOVE AND RELATIONSHIPS",
+    price: "R250,00",
+    previous_price: "",
+    image: "/signaturepicks/3.png",
+  },
+];
 
 export default function SignaturePicks({ data }: { data: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
-  const picksRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      if (!heroRef.current || !picksRef.current) return;
-
-      // Start with picks below the hero
-      gsap.set(picksRef.current, { yPercent: 100 });
-
-      // Picks slides up to cover hero
-      gsap.to(picksRef.current, {
-        yPercent: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 90%",
-          end: "50% top",
-          scrub: 0.5,
-        },
-      });
-
-      // Hero moves up slightly as picks covers it
-      gsap.to(heroRef.current, {
-        yPercent: -20,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "50% top",
-          scrub: 0.5,
-        },
-      });
-    },
-    { scope: containerRef },
-  );
 
   return (
-    <div ref={containerRef} className="relative h-[200vh]">
+    <div className="">
       {/* HERO - sticky so it stays while picks scrolls over
       {/* <div ref={heroRef} className="sticky top-0 h-screen overflow-hidden bg-black">*/}
-      <Hero ref={heroRef} data={data} />
+      <Hero data={data} />
       {/*</div>*/}
 
       {/* SIGNATURE PICKS - positioned to slide up over hero */}
       <div
-        ref={picksRef}
-        style={{ transform: "translateY(100vh)" }}
-        className="absolute top-0 left-0 w-full h-[200dvh] bg-red-500 flex items-center justify-center z-10"
+        className="my-[40px] flex-col justify-center items-center"
       >
-        <h1 className="text-5xl font-bold text-white">Signature Picks</h1>
+        <div className="flex justify-between items-center mx-[73px]">
+          <h1 className="text-black text-[50px] font-semibold w-[340px]">Our Signature Crystal Picks</h1>
+          <p className="text-black text-[20px] text-end font-medium">Pieces defined by natural beauty, vibrant<br/> energy, and a refined sense of timeless elegance.</p>
+        </div>
+        <div className="flex items-center justify-between py-4 gap-6 mt-[40px] mx-10">
+          {products.map((product, index) => (
+            <div className="flex flex-col" key={product.key}>
+              <Image
+                key={index}
+                width={400}
+                height={543}
+                alt={product.label}
+                src={product.image}
+                />
+                <div className="flex items-center gap-1 uppercase">
+                  <h2 className="text-black text-[18px] font-semibold mt-4">{product.label}</h2>
+                  <p className="text-black text-[14px] font-regular mt-4 ">{product.description}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-black text-[24px] font-bold mt-4">{product.price}</h2>
+                  {product.previous_price && (
+                    <h3 className="text-gray-500 text-[16px] font-medium line-through mt-4">{product.previous_price}</h3>
+                  )}
+                </div>
+
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
