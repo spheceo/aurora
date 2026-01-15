@@ -5,6 +5,7 @@ import { Google_Sans_Flex } from "next/font/google";
 const googleSansFlex = Google_Sans_Flex({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  fallback: ["system-ui", "sans-serif"],
 });
 
 export const revalidate = 0;
