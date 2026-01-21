@@ -10,7 +10,7 @@ function Toaster({ ...props }: ToasterProps) {
       position="top-center"
       toastOptions={{
         style: {
-          background: "#E66C21",
+          background: "var(--main)",
           color: "white",
           border: "none",
         },

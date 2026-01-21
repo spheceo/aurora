@@ -171,7 +171,7 @@ export default function Search() {
                       )}
                       {/* Cart Button - Top Right Corner (hidden when sold out) */}
                       {!product.soldOut && (
-                        <button onClick={() => { addItem(product); toast("Added to cart"); }} className="absolute top-2 right-2 p-2 rounded-full bg-[#E66C21] text-white hover:bg-[#d55f1a] transition-all opacity-0 group-hover:opacity-100">
+                        <button onClick={() => { addItem(product); toast("Added to cart"); }} className="absolute top-2 right-2 p-2 rounded-full bg-main text-white hover:bg-main/80 transition-all opacity-0 group-hover:opacity-100">
                           <FiShoppingCart className="w-3 h-3" />
                         </button>
                       )}

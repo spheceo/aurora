@@ -1,11 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import Image from "next/image";
-import Hero from "./hero";
 
 const products = [
   {
@@ -35,18 +30,12 @@ const products = [
 ];
 
 export default function SignaturePicks({ data }: { data: string }) {
-
   return (
-    <div className="">
-      {/* HERO - sticky so it stays while picks scrolls over
-      {/* <div ref={heroRef} className="sticky top-0 h-screen overflow-hidden bg-black">*/}
-      <Hero data={data} />
-      {/*</div>*/}
-
-      {/* SIGNATURE PICKS - positioned to slide up over hero */}
-      <div
-        className="my-[40px] flex-col justify-center items-center"
-      >
+    <div
+      id="signature-picks"
+      className="relative z-20 bg-white min-h-screen"
+    >
+      <div className="pt-[40px] pb-[40px] flex-col justify-center items-center">
         <div className="flex justify-between items-center mx-[73px]">
           <h1 className="text-black text-[50px] font-semibold w-[340px]">Our Signature Crystal Picks</h1>
           <p className="text-black text-[20px] text-end font-medium">Pieces defined by natural beauty, vibrant<br/> energy, and a refined sense of timeless elegance.</p>

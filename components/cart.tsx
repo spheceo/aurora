@@ -52,7 +52,7 @@ export default function Cart() {
         <button className="cursor-pointer outline-none relative">
           <FiShoppingCart />
           {itemCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-[#E66C21] text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">{itemCount}</span>
+            <span className="absolute -top-2 -right-2 bg-(--primary) text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">{itemCount}</span>
           )}
         </button>
       </DropdownMenuTrigger>
@@ -114,7 +114,7 @@ export default function Cart() {
             </div>
 
             {/* Checkout Button */}
-            <button onClick={handleCheckout} className="w-full bg-[#E66C21] text-white py-3 rounded-xl font-medium hover:bg-[#d55f1a] transition-colors">
+            <button onClick={handleCheckout} className="w-full bg-main text-white py-3 rounded-xl font-medium hover:bg-main/80 transition-colors">
               Checkout
             </button>
           </>
