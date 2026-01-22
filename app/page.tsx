@@ -9,7 +9,7 @@ export default async function Home() {
 
   return (
     <>
-      <ReactLenis root />
+      <ReactLenis root /> 
 
       <Hero data={data} />
       <SignaturePicks data={data} />
