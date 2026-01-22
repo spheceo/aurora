@@ -3,7 +3,7 @@ This is the Aurora ecommerce project.
 
 It consists of:
 - A Next.js frontend
-- An oRPC backend API
+- An oRPC backend API 
 
 ## Important Things to Note for Devs
 
