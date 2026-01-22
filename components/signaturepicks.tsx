@@ -42,7 +42,7 @@ export default function SignaturePicks({ data }: { data: string }) {
         </div>
         <div className="flex items-center justify-center py-4 mt-[40px] gap-22 w-full">
           {products.map((product, index) => (
-            <div className="flex flex-col" key={product.key}>
+            <div className="flex flex-col cursor-pointer group" key={product.key}>
               <Image
                 key={index}
                 width={400}

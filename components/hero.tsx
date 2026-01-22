@@ -89,11 +89,11 @@ export default forwardRef(function Hero(
                 <div className="bg-white h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
               </div>
               <div className="group cursor-pointer">
-                <Link href="/About">About</Link>
+                <Link href="/about">About</Link>
                 <div className="bg-white h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
               </div>
               <div className="group cursor-pointer">
-                <Link href="/Contact">Contact</Link>
+                <Link href="/contact">Contact</Link>
                 <div className="bg-white h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
               </div>
 
@@ -123,14 +123,14 @@ export default forwardRef(function Hero(
                 of the earth and selected for its clarity, color, and presence.
               </p>
               <div className="flex gap-6">
-                <button className="bg-background text-foreground px-7 py-3 rounded-full group">
+                <button className="bg-background text-foreground px-7 py-3 rounded-full group cursor-pointer">
                   <a href="/shop" className="flex gap-3 items-center">
                     Shop Now{" "}
                     <FaArrowRight className="-rotate-45 group-hover:rotate-0 group-hover:translate-x-1 transition-all duration-300 ease-out" />
                   </a>
                 </button>
-                <button className="group">
-                  <a href="/learn" className="flex gap-3 items-center">
+                <button className="group cursor-pointer">
+                  <a href="/about" className="flex gap-3 items-center">
                     Learn More{" "}
                     <FaArrowRight className="-rotate-45 group-hover:rotate-0 group-hover:translate-x-1 transition-all duration-300 ease-out" />
                   </a>

@@ -10,6 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useCartStore } from "@/lib/zustand/useCartStore";
 import { toast } from "@/components/ui/sonner";
 import Image from "next/image";
+import Link from "next/link";
 import { FiShoppingCart } from "react-icons/fi";
 
 type Product = z.infer<typeof ProductsResponseSchema>[number];
@@ -71,7 +72,12 @@ export default function Search() {
   // Initial fetch when dialog opens
   useEffect(() => {
     if (open && !hasSearched) {
-      api.products({ first: 6, query: query.trim() || undefined }).then((data) => {
+      const trimmedQuery = query.trim();
+      // On initial load with no query, show 5 products. If there's a query, show all.
+      api.products({
+        first: trimmedQuery ? undefined : 5,
+        query: trimmedQuery || undefined
+      }).then((data) => {
         setProducts(data);
         setHasSearched(true);
       });
@@ -87,7 +93,11 @@ export default function Search() {
 
     debounceRef.current = setTimeout(() => {
       const trimmedQuery = query.trim();
-      api.products({ first: 6, query: trimmedQuery || undefined }).then((data) => {
+      // When searching, show all results. When query is empty, show 5
+      api.products({
+        first: trimmedQuery ? undefined : 5,
+        query: trimmedQuery || undefined
+      }).then((data) => {
         setProducts(data);
       });
     }, 50);
@@ -104,36 +114,53 @@ export default function Search() {
           <LuSearch />
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl! sm:max-w-5xl! w-[75vw] max-h-[70vh] overflow-y-auto p-8">
+      <DialogContent
+        className="max-w-5xl! sm:max-w-5xl! w-[75vw] max-h-[70vh] overflow-y-auto p-0 bg-background border-border rounded-none overscroll-contain"
+        onWheel={(e) => e.stopPropagation()}
+        onTouchMove={(e) => e.stopPropagation()}
+      >
         <DialogHeader className="sr-only">
           <DialogTitle>Search products</DialogTitle>
           <DialogDescription>Find items available in the store.</DialogDescription>
         </DialogHeader>
 
-        {/* Close button */}
-        <DialogClose className="absolute right-6 top-6 p-2 hover:scale-110 transition-all outline-none cursor-pointer">
-          <LuX className="w-5 h-5" />
-        </DialogClose>
+        {/* Sticky Header and Controls */}
+        <div className="sticky top-0 z-10 bg-background">
+          {/* Header */}
+          <div className="border-b border-border px-6 py-4 flex items-center justify-between">
+            <h2 className="text-xs font-medium uppercase tracking-wider text-foreground">Search Products</h2>
+            <DialogClose className="hover:opacity-70 transition-opacity outline-none cursor-pointer">
+              <LuX className="w-4 h-4 text-foreground" />
+            </DialogClose>
+          </div>
 
-        {/* Search input */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Search Products</h2>
-          <div className="flex gap-3">
-            <div className="px-5 py-3 rounded-xl border border-white/20 flex items-center gap-3 flex-1">
-              <LuSearch className="text-[#9A9A9A] w-5 h-5" />
-              <input placeholder="Search for any product..." value={query} onChange={(e) => setQuery(e.target.value)} className="placeholder:text-[#9A9A9A] outline-none w-full text-lg" />
+          {/* Search Controls */}
+          <div className="px-6 py-4 border-b border-border">
+          <div className="flex gap-2">
+            <div className="px-4 py-2.5 border border-border flex items-center gap-3 flex-1">
+              <LuSearch className="text-[#9A9A9A] w-4 h-4" />
+              <input
+                placeholder="Search..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="placeholder:text-[#9A9A9A] outline-none w-full text-sm bg-transparent text-foreground"
+              />
             </div>
             {/* Price Range Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="px-5 py-3 rounded-xl border border-white/20 flex items-center gap-2 hover:bg-white/10 transition-colors whitespace-nowrap">
-                  <span className="text-[#9A9A9A]">{priceRanges.find((r) => r.value === priceRange)?.label}</span>
-                  <LuChevronDown className="text-[#9A9A9A] w-4 h-4" />
+                <button className="px-4 py-2.5 border border-border flex items-center gap-2 hover:bg-secondary transition-colors whitespace-nowrap cursor-pointer text-xs text-foreground">
+                  <span>{priceRanges.find((r) => r.value === priceRange)?.label}</span>
+                  <LuChevronDown className="w-3 h-3 text-[#9A9A9A]" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-white text-black">
+              <DropdownMenuContent align="end" className="bg-background border-border rounded-none min-w-[200px]">
                 {priceRanges.map((range) => (
-                  <DropdownMenuItem key={range.value} onClick={() => setPriceRange(range.value)} className={priceRange === range.value ? "bg-gray-100" : ""}>
+                  <DropdownMenuItem
+                    key={range.value}
+                    onClick={() => setPriceRange(range.value)}
+                    className={`text-foreground hover:bg-secondary cursor-pointer rounded-none ${priceRange === range.value ? "bg-secondary" : ""}`}
+                  >
                     {range.label}
                   </DropdownMenuItem>
                 ))}
@@ -141,48 +168,72 @@ export default function Search() {
             </DropdownMenu>
           </div>
         </div>
+        </div>
 
         {/* Results */}
-        <div className="min-h-[280px] transition-all duration-300 ease-in-out">
+        <div className="px-6 py-6 min-h-[280px]">
           {hasSearched && !filteredProducts?.length ? (
-            <div className="flex items-center justify-center h-[280px]">
-              <p className="text-[#9A9A9A] text-lg">No products found.</p>
+            <div className="flex flex-col items-center justify-center h-[280px]">
+              <LuSearch className="w-8 h-8 text-[#9A9A9A] mb-3" />
+              <p className="text-[#9A9A9A] text-sm">No products found</p>
             </div>
           ) : filteredProducts?.length ? (
             <>
-              <p className="text-sm text-white/60 mb-4">Here are 5 picked products for you</p>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              <p className="text-[10px] text-[#9A9A9A] mb-4 uppercase tracking-wider">
+                {filteredProducts.length} {filteredProducts.length === 1 ? 'Result' : 'Results'}
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 {filteredProducts.map((product) => (
-                  <div key={product.id} className="group cursor-pointer">
-                    {/* Product Image with Cart Button */}
-                    <div className="aspect-square relative rounded-xl overflow-hidden bg-gray-100 mb-3 max-w-[150px]">
+                  <Link key={product.id} href={`/product/${product.numericId}`} className="group cursor-pointer">
+                    {/* Product Image */}
+                    <div className="aspect-square relative overflow-hidden bg-secondary/30 mb-2">
                       {product.assets[0]?.url ? (
-                        <Image src={product.assets[0].url} alt={product.assets[0].altText || product.title} fill className={`object-cover group-hover:scale-105 transition-transform duration-500 ${product.soldOut ? "opacity-50 grayscale" : ""}`} />
+                        <Image
+                          src={product.assets[0].url}
+                          alt={product.assets[0].altText || product.title}
+                          fill
+                          className={`object-cover transition-opacity duration-300 ${product.soldOut ? "opacity-30" : "group-hover:opacity-90"}`}
+                        />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          <LuSearch className="w-12 h-12" />
+                        <div className="w-full h-full flex items-center justify-center">
+                          <div className="w-8 h-8 bg-border/50" />
                         </div>
                       )}
+
                       {/* Sold Out Badge */}
                       {product.soldOut && (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="bg-black/70 text-white text-xs font-semibold px-2 py-1 rounded">SOLD OUT</span>
+                        <div className="absolute top-2 left-2">
+                          <span className="text-[10px] font-semibold tracking-widest uppercase px-2 py-1 bg-background/80 backdrop-blur-sm text-foreground">
+                            Sold Out
+                          </span>
                         </div>
                       )}
-                      {/* Cart Button - Top Right Corner (hidden when sold out) */}
+                    </div>
+
+                    {/* Product Info */}
+                    <div>
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <h3 className="text-xs font-medium leading-tight truncate uppercase tracking-wide text-foreground">
+                          {product.title}
+                        </h3>
+                        <p className={`text-xs font-medium whitespace-nowrap ${product.soldOut ? "text-[#9A9A9A]" : "text-foreground"}`}>
+                          {product.soldOut ? "—" : product.price.replace(" ZAR", "")}
+                        </p>
+                      </div>
                       {!product.soldOut && (
-                        <button onClick={() => { addItem(product); toast("Added to cart"); }} className="absolute top-2 right-2 p-2 rounded-full bg-main text-white hover:bg-main/80 transition-all opacity-0 group-hover:opacity-100">
-                          <FiShoppingCart className="w-3 h-3" />
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addItem(product);
+                            toast("Added to cart");
+                          }}
+                          className="w-full py-1.5 border border-border text-[10px] font-medium hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300 uppercase tracking-wider text-foreground"
+                        >
+                          Add to Cart
                         </button>
                       )}
                     </div>
-                    {/* Product Info */}
-                    <div className="flex flex-col gap-1">
-                      <h3 className="font-semibold text-lg uppercase">{product.title}</h3>
-                      <p className="text-sm text-[#9A9A9A] line-clamp-1">{product.description}</p>
-                      <p className={`text-xl font-bold mt-2 ${product.soldOut ? "text-[#9A9A9A]" : ""}`}>{product.soldOut ? "Sold Out" : product.price}</p>
-                    </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </>
