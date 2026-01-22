@@ -33,14 +33,14 @@ export default function SignaturePicks({ data }: { data: string }) {
   return (
     <div
       id="signature-picks"
-      className="relative z-20 bg-white min-h-screen"
+      className="relative z-20 bg-white "
     >
       <div className="pt-[40px] pb-[40px] flex-col justify-center items-center">
         <div className="flex justify-between items-center mx-[73px]">
           <h1 className="text-black text-[50px] font-semibold w-[340px]">Our Signature Crystal Picks</h1>
           <p className="text-black text-[20px] text-end font-medium">Pieces defined by natural beauty, vibrant<br/> energy, and a refined sense of timeless elegance.</p>
         </div>
-        <div className="flex items-center justify-between py-4 mt-[40px] px-20">
+        <div className="flex items-center justify-center py-4 mt-[40px] gap-22 w-full">
           {products.map((product, index) => (
             <div className="flex flex-col" key={product.key}>
               <Image
