@@ -191,13 +191,15 @@ export default function Contact() {
               <h3 className="text-sm font-medium mb-4">Follow Us</h3>
               <div className="flex gap-4">
                 <a
-                  href="#"
+                  href="https://www.instagram.com/aura_crystalss/"
+                  target="_blank"
                   className="px-4 py-2 border border-border text-xs hover:bg-foreground hover:text-background hover:border-foreground transition-all cursor-pointer"
                 >
                   Instagram
                 </a>
                 <a
-                  href="#"
+                  href="https://www.tiktok.com/@aura_crystalss"
+                  target="_blank"
                   className="px-4 py-2 border border-border text-xs hover:bg-foreground hover:text-background hover:border-foreground transition-all cursor-pointer"
                 >
                   TikTok

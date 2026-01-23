@@ -6,7 +6,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from "@/components/ui/custom-carousel";
 import { carouselItems } from "@/lib/carousel-items";
 
 import {
@@ -16,12 +16,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/custom-dialog"
 
 
 export default function HeroCarousel() {
   return (
-    <section className="w-full px-6 py-16 ml-[120px] mt-10 mb-20">
+    <section className="w-full py-16 mt-10 mb-20 overflow-hidden">
       <Carousel
         opts={{
           align: "start",
@@ -30,7 +30,7 @@ export default function HeroCarousel() {
         className="w-full"
       >
         {/* Slides */}
-        <CarouselContent className="-ml-4 mr-20 ">
+        <CarouselContent className="-ml-4 pl-[120px]">
           {carouselItems.map((item, index) => (
             <CarouselItem
               key={index}
@@ -59,16 +59,16 @@ export default function HeroCarousel() {
                 </button>
               </DialogTrigger>
 
-              <DialogContent>
+              <DialogContent className="overflow-hidden">
                 <DialogHeader>
-                  <DialogTitle>Scrollable Content</DialogTitle>
+                  <DialogTitle>{item.headline}</DialogTitle>
                   <DialogDescription>
-                    This is a dialog with scrollable content.
+                    {item.title}
                   </DialogDescription>
                 </DialogHeader>
-                <div className="no-scrollbar -mx-4 max-h-[50vh] overflow-y-auto px-4">
+                <div className="overflow-y-auto max-h-[60vh] pr-2">
                   {Array.from({ length: 10 }).map((_, index) => (
-                    <p key={index} className="mb-4 leading-normal">
+                    <p key={index} className="mb-4 leading-normal text-foreground">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
                       eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
                       enim ad minim veniam, quis nostrud exercitation ullamco laboris
@@ -86,22 +86,11 @@ export default function HeroCarousel() {
               </div>
             </CarouselItem>
           ))}
+          <div className="min-w-[120px] shrink-0" aria-hidden="true" />
         </CarouselContent>
 
-        
-
-            <div
-              aria-hidden
-              className="
-                pl-4
-                basis-[7.5%]
-                md:basis-[20%]
-                lg:basis-[26%]
-              "
-            />
-
         {/* Bottom controls */}
-        <div className="mt-8 flex items-center gap-4">
+        <div className="mt-8 flex items-center gap-4 pl-[120px]">
           <CarouselPrevious className="static translate-y-0" />
           <CarouselNext className="static translate-y-0" />
         </div>

@@ -1,9 +1,9 @@
 "use client";
 import { FiShoppingCart, FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/custom-dropdown";
 import { useCartStore } from "@/lib/zustand/useCartStore";
 import { api } from "@/lib/orpc";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/components/ui/custom-toast";
 import Image from "next/image";
 
 export default function Cart() {
@@ -52,7 +52,7 @@ export default function Cart() {
         <button className="cursor-pointer outline-none relative">
           <FiShoppingCart />
           {itemCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-foreground text-background text-[10px] w-4 h-4 flex items-center justify-center font-medium">{itemCount}</span>
+            <span className="absolute -top-2 -right-2 bg-background text-foreground border border-foreground text-[10px] w-4 h-4 flex items-center justify-center font-medium rounded-full">{itemCount}</span>
           )}
         </button>
       </DropdownMenuTrigger>

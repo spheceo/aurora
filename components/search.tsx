@@ -5,10 +5,10 @@ import { LuChevronDown, LuSearch, LuX } from "react-icons/lu";
 import { api } from "@/lib/orpc";
 import { z } from "zod";
 import { ProductsResponseSchema } from "@/lib/products";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/custom-dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/custom-dropdown";
 import { useCartStore } from "@/lib/zustand/useCartStore";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/components/ui/custom-toast";
 import Image from "next/image";
 import Link from "next/link";
 import { FiShoppingCart } from "react-icons/fi";
@@ -223,11 +223,12 @@ export default function Search() {
                       {!product.soldOut && (
                         <button
                           onClick={(e) => {
+                            e.preventDefault();
                             e.stopPropagation();
                             addItem(product);
                             toast("Added to cart");
                           }}
-                          className="w-full py-1.5 border border-border text-[10px] font-medium hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300 uppercase tracking-wider text-foreground"
+                          className="w-full py-1.5 border border-border text-[10px] font-medium hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300 uppercase tracking-wider text-foreground cursor-pointer"
                         >
                           Add to Cart
                         </button>

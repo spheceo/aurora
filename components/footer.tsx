@@ -70,7 +70,8 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/aura_crystalss/"
+                  target="_blank"
                   className="text-sm text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer"
                 >
                   Instagram
@@ -78,7 +79,8 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="https://www.tiktok.com/@aura_crystalss"
+                  target="_blank"
                   className="text-sm text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer"
                 >
                   TikTok
@@ -95,18 +97,18 @@ export default function Footer() {
               © {currentYear} Aurora. All rights reserved.
             </p>
             <div className="flex items-center gap-6">
-              <a
-                href="#"
+              <Link
+                href="/privacy"
                 className="text-xs text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer"
               >
                 Privacy Policy
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="/terms"
                 className="text-xs text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer"
               >
                 Terms of Service
-              </a>
+              </Link>
             </div>
           </div>
         </div>

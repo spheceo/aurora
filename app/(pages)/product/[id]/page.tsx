@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useCartStore } from "@/lib/zustand/useCartStore";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/components/ui/custom-toast";
 import { api } from "@/lib/orpc";
 import { z } from "zod";
 import { ProductsResponseSchema } from "@/lib/products";
@@ -330,16 +330,16 @@ export default function ProductPage() {
             {!product.soldOut && (
               <div className="animate-content flex gap-3">
                 <button
+                  onClick={handleAddToCart}
+                  className="flex-1 px-8 py-4 border border-border text-foreground transition-colors text-sm font-medium tracking-wider uppercase cursor-pointer"
+                >
+                  Add to Cart
+                </button>
+                <button
                   onClick={handleCheckout}
                   className="flex-1 px-8 py-4 bg-foreground text-background hover:bg-foreground/90 transition-colors text-sm font-medium tracking-wider uppercase cursor-pointer"
                 >
                   Checkout Now
-                </button>
-                <button
-                  onClick={handleAddToCart}
-                  className="flex-1 px-8 py-4 border border-border text-foreground hover:bg-foreground hover:text-background transition-colors text-sm font-medium tracking-wider uppercase cursor-pointer"
-                >
-                  Add to Cart
                 </button>
               </div>
             )}

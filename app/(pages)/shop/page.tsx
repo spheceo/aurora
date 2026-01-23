@@ -9,14 +9,14 @@ import { ProductsResponseSchema } from "@/lib/products";
 import { LuSearch, LuChevronDown, LuArrowUpDown, LuX } from "react-icons/lu";
 import { FiShoppingCart } from "react-icons/fi";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/components/ui/custom-toast";
 import { parseAsString, useQueryState } from "nuqs";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/custom-dropdown";
 import gsap from "gsap";
 import Cart from "@/components/cart";
 
@@ -375,6 +375,7 @@ export default function Shop() {
                   {!product.soldOut && (
                     <button
                       onClick={(e) => {
+                        e.preventDefault();
                         e.stopPropagation();
                         addItem(product);
                         toast("Added to cart");

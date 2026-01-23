@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Google_Sans_Flex } from "next/font/google";
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
 import Footer from "@/components/footer";
 
 const googleSansFlex = Google_Sans_Flex({
