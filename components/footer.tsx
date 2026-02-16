@@ -70,7 +70,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="https://www.instagram.com/aura_crystalss/"
+                  href="https://www.instagram.com/aurora_crystalss/"
                   target="_blank"
                   className="text-sm text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer"
                 >
@@ -79,7 +79,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://www.tiktok.com/@aura_crystalss"
+                  href="https://www.tiktok.com/@aurora_crystalss"
                   target="_blank"
                   className="text-sm text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer"
                 >

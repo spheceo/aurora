@@ -13,7 +13,7 @@ export const siteConfig = {
   locale: "en_ZA",
   keywords: [
     "aurora za crystals",
-    "aura crystals",
+    "aurora crystals",
     "aurora crystal store",
     "crystal store south africa",
     "natural crystals",
@@ -21,8 +21,8 @@ export const siteConfig = {
     "crystal gifts",
   ],
   social: {
-    instagram: "https://www.instagram.com/aura_crystalss/",
-    tiktok: "https://www.tiktok.com/@aura_crystalss",
+    instagram: "https://www.instagram.com/aurora_crystalss/",
+    tiktok: "https://www.tiktok.com/@aurora_crystalss",
   },
 };
 

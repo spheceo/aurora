@@ -11,7 +11,7 @@ import { getCollections } from "@/lib/collections";
 import { siteConfig } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Aura Crystals and Crystal Store in South Africa",
+  title: "Aurora Crystals and Crystal Store in South Africa",
   description:
     "Aurora ZA is your crystal store for natural crystals, crystal decor, and crystal gifts across South Africa.",
   alternates: {
