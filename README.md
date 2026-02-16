@@ -10,6 +10,52 @@ It consists of:
 - `SHOPIFY_TOKEN`: Storefront API access token.
 - `SHOPIFY_DOMAIN`: Shopify Storefront API domain (usually your `*.myshopify.com` domain).
 - `SHOPIFY_CHECKOUT_DOMAIN` (optional): Forces checkout/cart redirect host. Use this when your app and Shopify storefront domain overlap and checkout redirects resolve to the wrong server.
+- `RESEND_API_KEY`: Resend API key used for transactional emails.
+- `ADMIN_NOTIFICATION_EMAIL`: Admin inbox that receives payment success notifications.
+- `EMAIL_SENDER_DOMAIN` (optional): Domain used for sender address (`orders@<domain>`). Falls back to Resend's `onboarding@resend.dev` sender if unset.
+- `APP_URL` (optional): Canonical app URL used for webhook email links and logo URLs.
+
+## Payment Success Webhook
+
+- Endpoint: `POST /api/webhooks/payment-succeeded`
+- Content-Type: `application/json`
+- Expected event: `payment_succeeded`
+- Delivery behavior:
+  - Sends one admin notification email and one customer confirmation email via Resend.
+  - Returns `200` only when both sends succeed.
+  - Returns non-2xx (`502`) when either send fails so webhook providers can retry.
+
+Example payload:
+
+```json
+{
+  "event": "payment_succeeded",
+  "source": "external",
+  "orderId": "ORD-1001",
+  "paidAt": "2026-02-16T10:20:00.000Z",
+  "amount": 259.99,
+  "currency": "USD",
+  "customer": {
+    "email": "customer@example.com",
+    "firstName": "Jane",
+    "lastName": "Doe"
+  },
+  "items": [
+    {
+      "title": "Rose Quartz Point",
+      "quantity": 1,
+      "unitPrice": 259.99
+    }
+  ],
+  "shippingAddress": {
+    "line1": "123 Crystal Lane",
+    "city": "Cape Town",
+    "region": "Western Cape",
+    "postalCode": "8001",
+    "country": "South Africa"
+  }
+}
+```
 
 ## Important Things to Note for Devs
 
@@ -51,8 +97,9 @@ See `components/hero.tsx` for a working implementation.
 ## TODO (Before Production)
 - Implement transactional email flow (e.g., Resend):
   - On contact form submit: notify Aurora owner and send user confirmation email.
-  - On order created: handle Shopify webhook, send receipt/confirmation to user and notify Aurora owner.
-- Add Shopify webhook endpoint with signature verification and retries (order create/paid events).
+- Tighten payment webhook security:
+  - Restrict to Shopify webhook source only.
+  - Add Shopify HMAC verification and replay protection.
 - Add error handling + user-friendly fallbacks for Shopify API failures (products/collections/checkout).
 - Add product pagination (or infinite scroll) to avoid loading all products at once.
 - Add collection-filter-aware empty states and loading states.

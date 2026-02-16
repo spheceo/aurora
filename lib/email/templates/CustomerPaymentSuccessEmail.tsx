@@ -1,0 +1,122 @@
+import { Link, Section, Text } from "@react-email/components";
+import type { CSSProperties } from "react";
+import type { PaymentSucceededWebhookInput } from "@/lib/webhooks/paymentSucceededSchema";
+import { AuroraEmailShell } from "./components/AuroraEmailShell";
+
+type CustomerPaymentSuccessEmailProps = {
+  appUrl: string;
+  payload: PaymentSucceededWebhookInput;
+};
+
+function formatCurrency(amount: number, currency: string) {
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 2,
+    }).format(amount);
+  } catch {
+    return `${currency} ${amount.toFixed(2)}`;
+  }
+}
+
+function getCustomerName(firstName?: string, fallback = "there") {
+  return firstName?.trim() || fallback;
+}
+
+// TODO: review template copy/styles before production.
+export function CustomerPaymentSuccessEmail({
+  appUrl,
+  payload,
+}: CustomerPaymentSuccessEmailProps) {
+  return (
+    <AuroraEmailShell
+      previewText={`Thanks for your purchase, order ${payload.orderId}`}
+      eyebrow="Payment received"
+      title={`Thank you, ${getCustomerName(payload.customer.firstName)}.`}
+      subtitle="Your payment was successful and your order is now being prepared."
+      ctaHref={appUrl}
+      ctaLabel="Continue shopping"
+      appUrl={appUrl}
+    >
+      <Section style={styles.card}>
+        <Text style={styles.paragraph}>
+          We are grateful for your purchase. Below is a confirmation summary for
+          your records.
+        </Text>
+
+        <Section style={styles.summaryGrid}>
+          <Text style={styles.summaryLabel}>Order ID</Text>
+          <Text style={styles.summaryValue}>{payload.orderId}</Text>
+
+          <Text style={styles.summaryLabel}>Total paid</Text>
+          <Text style={styles.summaryValue}>
+            {formatCurrency(payload.amount, payload.currency)}
+          </Text>
+        </Section>
+
+        <Text style={styles.summaryLabel}>Items purchased</Text>
+        {payload.items.map((item, index) => (
+          <Text key={`${item.title}-${index}`} style={styles.itemRow}>
+            {item.quantity} x {item.title}
+          </Text>
+        ))}
+
+        <Text style={styles.paragraph}>
+          Questions about your order? Contact us at{" "}
+          <Link href="mailto:hello@aurora.crystals" style={styles.link}>
+            hello@aurora.crystals
+          </Link>
+          .
+        </Text>
+      </Section>
+    </AuroraEmailShell>
+  );
+}
+
+const styles: Record<string, CSSProperties> = {
+  card: {
+    backgroundColor: "#ffffff",
+    border: "1px solid #f0e8e9",
+    borderRadius: "14px",
+    padding: "20px",
+  },
+  paragraph: {
+    margin: "0 0 14px",
+    color: "#333333",
+    fontSize: "14px",
+    lineHeight: "1.65",
+  },
+  summaryGrid: {
+    margin: "0 0 16px",
+    padding: "14px",
+    borderRadius: "10px",
+    backgroundColor: "#fbf7f8",
+    border: "1px solid #f3eaeb",
+  },
+  summaryLabel: {
+    margin: "0 0 4px",
+    color: "#7a686b",
+    fontSize: "11px",
+    textTransform: "uppercase",
+    letterSpacing: "1px",
+    fontWeight: 600,
+  },
+  summaryValue: {
+    margin: "0 0 12px",
+    color: "#1f1f1f",
+    fontSize: "14px",
+    lineHeight: "1.5",
+  },
+  itemRow: {
+    margin: "0 0 10px",
+    color: "#1f1f1f",
+    fontSize: "14px",
+    lineHeight: "1.5",
+  },
+  link: {
+    color: "#811A21",
+    textDecoration: "underline",
+    fontWeight: 600,
+  },
+};
