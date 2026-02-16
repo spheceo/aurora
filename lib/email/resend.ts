@@ -28,7 +28,7 @@ export function getFromAddress() {
   }
 
   const domain = normalizeDomain(env.EMAIL_SENDER_DOMAIN);
-  return `Aurora <orders@${domain}>`;
+  return `Aurora <noreply@${domain}>`;
 }
 
 export function getAppUrl() {

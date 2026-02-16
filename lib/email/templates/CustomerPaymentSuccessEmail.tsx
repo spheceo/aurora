@@ -1,6 +1,7 @@
 import { Link, Section, Text } from "@react-email/components";
 import type { CSSProperties } from "react";
 import type { PaymentEmailPayload } from "@/lib/email/paymentEmailPayload";
+import { SUPPORT_EMAIL } from "@/lib/email/constants";
 import { AuroraEmailShell } from "./components/AuroraEmailShell";
 
 type CustomerPaymentSuccessEmailProps = {
@@ -99,8 +100,8 @@ export function CustomerPaymentSuccessEmail({
 
         <Text style={styles.paragraph}>
           Questions about your order? Contact us at{" "}
-          <Link href="mailto:hello@aurora.crystals" style={styles.link}>
-            hello@aurora.crystals
+          <Link href={`mailto:${SUPPORT_EMAIL}`} style={styles.link}>
+            {SUPPORT_EMAIL}
           </Link>
           .
         </Text>

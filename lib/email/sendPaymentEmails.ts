@@ -1,6 +1,7 @@
 import type { Resend } from "resend";
 import { env } from "@/lib/env/server";
 import type { PaymentSucceededWebhookInput } from "@/lib/webhooks/paymentSucceededSchema";
+import { SUPPORT_EMAIL } from "./constants";
 import type { PaymentEmailPayload } from "./paymentEmailPayload";
 import { getAppUrl, getFromAddress, getResendClient } from "./resend";
 import { AdminPaymentSuccessEmail } from "./templates/AdminPaymentSuccessEmail";
@@ -173,7 +174,7 @@ export async function sendPaymentEmails(
       to: env.ADMIN_NOTIFICATION_EMAIL,
       subject: getAdminSubject(normalizedPayload),
       react: AdminPaymentSuccessEmail({ appUrl, payload: normalizedPayload }),
-      replyTo: normalizedPayload.customer.email || "hello@aurora.crystals",
+      replyTo: normalizedPayload.customer.email || SUPPORT_EMAIL,
     });
 
     result.adminMessageId = getMessageId(adminResponse);
@@ -212,7 +213,7 @@ export async function sendPaymentEmails(
         appUrl,
         payload: normalizedPayload,
       }),
-      replyTo: "hello@aurora.crystals",
+      replyTo: SUPPORT_EMAIL,
     });
 
     result.customerMessageId = getMessageId(customerResponse);

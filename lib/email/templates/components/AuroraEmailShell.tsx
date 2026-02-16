@@ -11,6 +11,7 @@ import {
   Text,
 } from "@react-email/components";
 import type { CSSProperties, ReactNode } from "react";
+import { SUPPORT_EMAIL } from "@/lib/email/constants";
 
 type AuroraEmailShellProps = {
   previewText: string;
@@ -72,7 +73,7 @@ export function AuroraEmailShell({
               This transactional email was sent by Aurora.
             </Text>
             <Text style={styles.footerText}>
-              Need help? Reach us at hello@aurora.crystals
+              Need help? Reach us at {SUPPORT_EMAIL}
             </Text>
             <Text style={styles.footerMuted}>
               Aurora, Earth's Beauty, Captured in Crystal.
