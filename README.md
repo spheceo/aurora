@@ -9,7 +9,6 @@ It consists of:
 
 - `SHOPIFY_TOKEN`: Storefront API access token.
 - `SHOPIFY_DOMAIN`: Shopify Storefront API domain (usually your `*.myshopify.com` domain).
-- `SHOPIFY_CHECKOUT_DOMAIN` (optional): Forces checkout/cart redirect host. Use this when your app and Shopify storefront domain overlap and checkout redirects resolve to the wrong server.
 - `RESEND_API_KEY`: Resend API key used for transactional emails.
 - `ADMIN_NOTIFICATION_EMAIL`: Admin inbox that receives payment success notifications.
 - `EMAIL_SENDER_DOMAIN` (optional): Domain used for sender address (`orders@<domain>`). Falls back to Resend's `onboarding@resend.dev` sender if unset.

@@ -4,6 +4,7 @@ import { Google_Sans_Flex } from "next/font/google";
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Toaster } from "@/components/ui/toaster";
 import Footer from "@/components/footer";
+import { siteConfig } from "@/lib/seo";
 
 const googleSansFlex = Google_Sans_Flex({
   subsets: ["latin"],
@@ -15,11 +16,46 @@ const googleSansFlex = Google_Sans_Flex({
 export const revalidate = 0;
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
-    template: '%s | Aurora',
-    default: 'Aurora',
+    template: "%s | Aurora ZA",
+    default: "Aurora ZA Crystals Store",
   },
-  description: "Earth's Beauty, Captured in Crystal.",
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: siteConfig.locale,
+    url: siteConfig.url,
+    title: "Aurora ZA Crystals Store",
+    description: siteConfig.description,
+    siteName: siteConfig.legalName,
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: "Aurora ZA crystals collection",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Aurora ZA Crystals Store",
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
 };
 
 export default function RootLayout({

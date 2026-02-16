@@ -6,7 +6,6 @@ export const env = createEnv({
   server: {
     SHOPIFY_TOKEN: z.string().min(1),
     SHOPIFY_DOMAIN: z.string().min(1),
-    SHOPIFY_CHECKOUT_DOMAIN: z.string().min(1).optional(),
     RESEND_API_KEY: z.string().min(1),
     ADMIN_NOTIFICATION_EMAIL: z.string().email(),
     EMAIL_SENDER_DOMAIN: z.string().min(1).optional(),

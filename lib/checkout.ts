@@ -29,20 +29,11 @@ const CART_CREATE_MUTATION = `
 `;
 
 function normalizeCheckoutUrl(rawUrl: string) {
-  const checkoutDomain =
-    env.SHOPIFY_CHECKOUT_DOMAIN ||
-    (env.SHOPIFY_DOMAIN.endsWith(".myshopify.com")
-      ? env.SHOPIFY_DOMAIN
-      : undefined);
-
   const url = rawUrl.startsWith("http")
     ? new URL(rawUrl)
-    : new URL(rawUrl, `https://${checkoutDomain || env.SHOPIFY_DOMAIN}`);
-
-  if (checkoutDomain && url.hostname !== checkoutDomain) {
-    url.hostname = checkoutDomain;
-    url.protocol = "https:";
-  }
+    : new URL(rawUrl, `https://${env.SHOPIFY_DOMAIN}`);
+  // Shopify requires using the full checkoutUrl it returns, so only enforce HTTPS.
+  url.protocol = "https:";
 
   return url.toString();
 }
