@@ -7,6 +7,14 @@ import { PaymentSucceededWebhookSchema } from "@/lib/webhooks/paymentSucceededSc
 
 export const runtime = "nodejs";
 
+function getWebhookOrderId(payload: { id: string | number; name?: string }) {
+  if (payload.name) {
+    return payload.name;
+  }
+
+  return String(payload.id);
+}
+
 export async function POST(request: Request) {
   const contentType = request.headers.get("content-type") || "";
 
@@ -49,10 +57,12 @@ export async function POST(request: Request) {
 
   const payload = parsedPayload.data;
   const attempt = request.headers.get("x-retry-count") || "1";
+  const topic = request.headers.get("x-shopify-topic") || "unknown";
+  const orderId = getWebhookOrderId(payload);
 
   console.info("[webhook:payment_succeeded] received", {
-    orderId: payload.orderId,
-    source: payload.source,
+    orderId,
+    topic,
     attempt,
   });
 
@@ -61,21 +71,21 @@ export async function POST(request: Request) {
     const emailResult = await sendPaymentEmails(payload);
 
     console.info("[webhook:payment_succeeded] emails sent", {
-      orderId: payload.orderId,
-      source: payload.source,
+      orderId,
+      topic,
       adminMessageId: emailResult.adminMessageId,
       customerMessageId: emailResult.customerMessageId,
     });
 
     return NextResponse.json({
       ok: true,
-      orderId: payload.orderId,
+      orderId,
       ...emailResult,
     });
   } catch (error) {
     console.error("[webhook:payment_succeeded] email dispatch failed", {
-      orderId: payload.orderId,
-      source: payload.source,
+      orderId,
+      topic,
       reason: error instanceof Error ? error.message : "Unknown",
       partialResult:
         error instanceof PaymentEmailSendError

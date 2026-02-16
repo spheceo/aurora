@@ -1,11 +1,11 @@
 import { Section, Text } from "@react-email/components";
 import type { CSSProperties } from "react";
-import type { PaymentSucceededWebhookInput } from "@/lib/webhooks/paymentSucceededSchema";
+import type { PaymentEmailPayload } from "@/lib/email/paymentEmailPayload";
 import { AuroraEmailShell } from "./components/AuroraEmailShell";
 
 type AdminPaymentSuccessEmailProps = {
   appUrl: string;
-  payload: PaymentSucceededWebhookInput;
+  payload: PaymentEmailPayload;
 };
 
 function formatCurrency(amount: number, currency: string) {

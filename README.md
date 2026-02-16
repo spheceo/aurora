@@ -19,7 +19,7 @@ It consists of:
 
 - Endpoint: `POST /api/webhooks/payment-succeeded`
 - Content-Type: `application/json`
-- Expected event: `payment_succeeded`
+- Expected Shopify topic: `Order payment` (`orders/paid`)
 - Delivery behavior:
   - Sends one admin notification email and one customer confirmation email via Resend.
   - Returns `200` only when both sends succeed.
@@ -29,29 +29,32 @@ Example payload:
 
 ```json
 {
-  "event": "payment_succeeded",
-  "source": "external",
-  "orderId": "ORD-1001",
-  "paidAt": "2026-02-16T10:20:00.000Z",
-  "amount": 259.99,
+  "id": 6176577044736,
+  "name": "#1012",
+  "order_number": 1012,
+  "contact_email": "customer@example.com",
+  "processed_at": "2026-02-16T10:20:00.000Z",
+  "updated_at": "2026-02-16T10:20:30.000Z",
+  "created_at": "2026-02-16T10:19:10.000Z",
+  "current_total_price": "259.99",
   "currency": "USD",
   "customer": {
     "email": "customer@example.com",
-    "firstName": "Jane",
-    "lastName": "Doe"
+    "first_name": "Jane",
+    "last_name": "Doe"
   },
-  "items": [
+  "line_items": [
     {
       "title": "Rose Quartz Point",
       "quantity": 1,
-      "unitPrice": 259.99
+      "price": "259.99"
     }
   ],
-  "shippingAddress": {
-    "line1": "123 Crystal Lane",
+  "shipping_address": {
+    "address1": "123 Crystal Lane",
     "city": "Cape Town",
-    "region": "Western Cape",
-    "postalCode": "8001",
+    "province": "Western Cape",
+    "zip": "8001",
     "country": "South Africa"
   }
 }

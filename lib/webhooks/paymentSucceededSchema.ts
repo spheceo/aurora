@@ -1,62 +1,58 @@
 import { z } from "zod";
 
-const CurrencyCodeSchema = z
+const MoneyStringSchema = z
   .string()
-  .trim()
-  .length(3, "currency must be a 3-letter ISO code")
-  .transform((value) => value.toUpperCase())
-  .refine((value) => /^[A-Z]{3}$/.test(value), {
-    message: "currency must be a 3-letter ISO code",
-  });
+  .regex(/^-?\d+(\.\d+)?$/, "must be a valid numeric string");
 
-const ItemSchema = z
+const ShopifyOrderLineItemSchema = z
   .object({
-    title: z.string().trim().min(1, "item title is required"),
-    quantity: z.number().int().min(1, "item quantity must be at least 1"),
-    unitPrice: z
-      .number()
-      .positive("item unitPrice must be positive")
-      .optional(),
+    title: z.string().trim().min(1).optional(),
+    name: z.string().trim().min(1).optional(),
+    quantity: z.number().int().min(1),
+    price: MoneyStringSchema.optional(),
   })
-  .strict();
+  .passthrough();
 
-const ShippingAddressSchema = z
+const ShopifyCustomerSchema = z
   .object({
-    line1: z.string().trim().min(1, "shippingAddress.line1 is required"),
-    city: z.string().trim().min(1, "shippingAddress.city is required"),
-    region: z.string().trim().min(1, "shippingAddress.region is required"),
-    postalCode: z
-      .string()
-      .trim()
-      .min(1, "shippingAddress.postalCode is required"),
-    country: z.string().trim().min(1, "shippingAddress.country is required"),
+    email: z.string().email().optional(),
+    first_name: z.string().trim().min(1).optional(),
+    last_name: z.string().trim().min(1).optional(),
   })
-  .strict();
+  .passthrough();
 
-const CustomerSchema = z
+const ShopifyShippingAddressSchema = z
   .object({
-    email: z.string().email("customer.email must be a valid email"),
-    firstName: z.string().trim().min(1).optional(),
-    lastName: z.string().trim().min(1).optional(),
+    address1: z.string().trim().min(1).optional(),
+    city: z.string().trim().min(1).optional(),
+    province: z.string().trim().min(1).optional(),
+    zip: z.string().trim().min(1).optional(),
+    country: z.string().trim().min(1).optional(),
   })
-  .strict();
+  .passthrough();
 
 export const PaymentSucceededWebhookSchema = z
   .object({
-    event: z.literal("payment_succeeded"),
-    source: z.string().trim().min(1, "source is required"),
-    orderId: z.string().trim().min(1, "orderId is required"),
-    paidAt: z
+    id: z.union([z.string(), z.number()]),
+    name: z.string().trim().min(1).optional(),
+    order_number: z.number().int().optional(),
+    contact_email: z.string().email().optional(),
+    email: z.string().email().optional(),
+    customer: ShopifyCustomerSchema.optional(),
+    line_items: z.array(ShopifyOrderLineItemSchema).min(1),
+    currency: z
       .string()
-      .datetime({ message: "paidAt must be a valid ISO datetime" }),
-    amount: z.number().positive("amount must be positive"),
-    currency: CurrencyCodeSchema,
-    customer: CustomerSchema,
-    items: z.array(ItemSchema).min(1, "items must contain at least one item"),
-    shippingAddress: ShippingAddressSchema.optional(),
-    meta: z.record(z.string(), z.unknown()).optional(),
+      .trim()
+      .length(3, "currency must be a 3-letter ISO code")
+      .transform((value) => value.toUpperCase()),
+    current_total_price: MoneyStringSchema.optional(),
+    total_price: MoneyStringSchema.optional(),
+    processed_at: z.string().datetime().optional(),
+    updated_at: z.string().datetime().optional(),
+    created_at: z.string().datetime().optional(),
+    shipping_address: ShopifyShippingAddressSchema.optional(),
   })
-  .strict();
+  .passthrough();
 
 export type PaymentSucceededWebhookInput = z.infer<
   typeof PaymentSucceededWebhookSchema
