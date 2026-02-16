@@ -39,6 +39,8 @@ export async function POST(request: Request) {
     );
   }
 
+  console.info("[webhook:payment_succeeded] raw_payload", body);
+
   const parsedPayload = PaymentSucceededWebhookSchema.safeParse(body);
 
   if (!parsedPayload.success) {
