@@ -20,8 +20,12 @@ function formatCurrency(amount: number, currency: string) {
   }
 }
 
-function formatPaidAt(value: string) {
+function formatTimestamp(value: string) {
   const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
 
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -52,10 +56,10 @@ export function AdminPaymentSuccessEmail({
 
   return (
     <AuroraEmailShell
-      previewText={`New paid order ${payload.orderId}`}
-      eyebrow="Admin payment alert"
-      title="A new order has been paid"
-      subtitle="A customer payment was confirmed. Review the order details below."
+      previewText={`Order ${payload.orderId} update: ${payload.financialStatus}`}
+      eyebrow="Admin order alert"
+      title="A Shopify order update was received"
+      subtitle={`Current financial status: ${payload.financialStatus}`}
       ctaHref={appUrl}
       ctaLabel="Open Aurora"
       appUrl={appUrl}
@@ -64,37 +68,57 @@ export function AdminPaymentSuccessEmail({
         <Text style={styles.label}>Order ID</Text>
         <Text style={styles.value}>{payload.orderId}</Text>
 
-        <Text style={styles.label}>Amount paid</Text>
+        <Text style={styles.label}>Financial status</Text>
+        <Text style={styles.value}>{payload.financialStatus}</Text>
+
+        <Text style={styles.label}>Order total</Text>
         <Text style={styles.value}>
           {formatCurrency(payload.amount, payload.currency)}
         </Text>
 
-        <Text style={styles.label}>Paid at</Text>
-        <Text style={styles.value}>{formatPaidAt(payload.paidAt)}</Text>
+        <Text style={styles.label}>Event time</Text>
+        <Text style={styles.value}>{formatTimestamp(payload.eventAt)}</Text>
 
-        <Text style={styles.label}>Source</Text>
-        <Text style={styles.value}>{payload.source}</Text>
+        {payload.cancelReason ? (
+          <>
+            <Text style={styles.label}>Cancel reason</Text>
+            <Text style={styles.value}>{payload.cancelReason}</Text>
+          </>
+        ) : null}
+
+        {payload.cancelledAt ? (
+          <>
+            <Text style={styles.label}>Cancelled at</Text>
+            <Text style={styles.value}>
+              {formatTimestamp(payload.cancelledAt)}
+            </Text>
+          </>
+        ) : null}
 
         <Text style={styles.label}>Customer</Text>
         <Text style={styles.value}>
           {getCustomerName(
             payload.customer.firstName,
             payload.customer.lastName,
-            payload.customer.email,
+            payload.customer.email || "No customer email provided",
           )}
           {"\n"}
-          {payload.customer.email}
+          {payload.customer.email || "No customer email provided"}
         </Text>
 
         <Text style={styles.label}>Items ({itemCount})</Text>
-        {payload.items.map((item, index) => (
-          <Text key={`${item.title}-${index}`} style={styles.itemRow}>
-            {item.quantity} x {item.title}
-            {typeof item.unitPrice === "number"
-              ? ` (${formatCurrency(item.unitPrice, payload.currency)} each)`
-              : ""}
-          </Text>
-        ))}
+        {payload.items.length > 0 ? (
+          payload.items.map((item, index) => (
+            <Text key={`${item.title}-${index}`} style={styles.itemRow}>
+              {item.quantity} x {item.title}
+              {typeof item.unitPrice === "number"
+                ? ` (${formatCurrency(item.unitPrice, payload.currency)} each)`
+                : ""}
+            </Text>
+          ))
+        ) : (
+          <Text style={styles.itemRow}>No line items were provided.</Text>
+        )}
       </Section>
 
       {payload.shippingAddress ? (

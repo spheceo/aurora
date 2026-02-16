@@ -21,9 +21,10 @@ It consists of:
 - Content-Type: `application/json`
 - Expected Shopify topic: `Order payment` (`orders/paid`)
 - Delivery behavior:
-  - Sends one admin notification email and one customer confirmation email via Resend.
-  - Returns `200` only when both sends succeed.
-  - Returns non-2xx (`502`) when either send fails so webhook providers can retry.
+  - Always sends an admin order-update email for every accepted Shopify payload.
+  - Sends a customer email when a customer email address exists in the payload.
+  - Email copy reflects the payload `financial_status` (e.g. `paid`, `voided`, etc.).
+  - Returns non-2xx (`502`) when required email sending fails so webhook providers can retry.
 
 Example payload:
 

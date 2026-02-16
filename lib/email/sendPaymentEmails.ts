@@ -40,15 +40,24 @@ function pickOrderId(payload: PaymentSucceededWebhookInput) {
     return payload.name;
   }
 
-  if (typeof payload.order_number === "number") {
+  if (typeof payload.order_number !== "undefined") {
     return `#${payload.order_number}`;
   }
 
-  return String(payload.id);
+  if (typeof payload.id !== "undefined") {
+    return String(payload.id);
+  }
+
+  return "Unknown order";
 }
 
-function pickPaidAt(payload: PaymentSucceededWebhookInput) {
-  return payload.processed_at || payload.updated_at || payload.created_at;
+function pickEventAt(payload: PaymentSucceededWebhookInput) {
+  return (
+    payload.processed_at ||
+    payload.updated_at ||
+    payload.created_at ||
+    new Date().toISOString()
+  );
 }
 
 function parseAmount(payload: PaymentSucceededWebhookInput) {
@@ -60,11 +69,28 @@ function parseAmount(payload: PaymentSucceededWebhookInput) {
 
   const value = Number.parseFloat(raw);
 
-  if (Number.isNaN(value) || value <= 0) {
+  if (Number.isNaN(value) || value < 0) {
     return undefined;
   }
 
   return value;
+}
+
+function sumLineItems(payload: PaymentSucceededWebhookInput) {
+  if (!payload.line_items?.length) {
+    return 0;
+  }
+
+  return payload.line_items.reduce((total, item) => {
+    const quantity = item.quantity || 1;
+    const price = item.price ? Number.parseFloat(item.price) : 0;
+
+    if (Number.isNaN(price)) {
+      return total;
+    }
+
+    return total + quantity * price;
+  }, 0);
 }
 
 function pickCustomerEmail(payload: PaymentSucceededWebhookInput) {
@@ -75,29 +101,15 @@ function normalizePayload(
   payload: PaymentSucceededWebhookInput,
 ): PaymentEmailPayload {
   const orderId = pickOrderId(payload);
-  const paidAt = pickPaidAt(payload);
-  const amount = parseAmount(payload);
-  const customerEmail = pickCustomerEmail(payload);
+  const amount = parseAmount(payload) ?? sumLineItems(payload);
 
-  if (!paidAt) {
-    throw new Error("Missing paid timestamp in Shopify order payload");
-  }
-
-  if (!amount) {
-    throw new Error("Missing or invalid total amount in Shopify order payload");
-  }
-
-  if (!customerEmail) {
-    throw new Error("Missing customer email in Shopify order payload");
-  }
-
-  const normalizedItems = payload.line_items.map((item, index) => {
+  const normalizedItems = (payload.line_items || []).map((item, index) => {
     const title = item.title || item.name || `Item ${index + 1}`;
     const unitPrice = item.price ? Number.parseFloat(item.price) : undefined;
 
     return {
       title,
-      quantity: item.quantity,
+      quantity: item.quantity || 1,
       unitPrice:
         typeof unitPrice === "number" && !Number.isNaN(unitPrice)
           ? unitPrice
@@ -118,17 +130,32 @@ function normalizePayload(
   return {
     source: "shopify",
     orderId,
-    paidAt,
+    eventAt: pickEventAt(payload),
     amount,
-    currency: payload.currency,
+    currency: payload.currency || "USD",
+    financialStatus: payload.financial_status || "unknown",
+    cancelReason: payload.cancel_reason,
+    cancelledAt: payload.cancelled_at,
     customer: {
-      email: customerEmail,
+      email: pickCustomerEmail(payload),
       firstName: payload.customer?.first_name,
       lastName: payload.customer?.last_name,
     },
     items: normalizedItems,
     shippingAddress,
   };
+}
+
+function getAdminSubject(payload: PaymentEmailPayload) {
+  return `Shopify order update (${payload.financialStatus}) - ${payload.orderId}`;
+}
+
+function getCustomerSubject(payload: PaymentEmailPayload) {
+  if (payload.financialStatus === "paid") {
+    return "Thanks for your purchase - Aurora";
+  }
+
+  return `Order status update (${payload.financialStatus}) - Aurora`;
 }
 
 export async function sendPaymentEmails(
@@ -144,9 +171,9 @@ export async function sendPaymentEmails(
     const adminResponse = await resend.emails.send({
       from: fromAddress,
       to: env.ADMIN_NOTIFICATION_EMAIL,
-      subject: `New paid order received - ${normalizedPayload.orderId}`,
+      subject: getAdminSubject(normalizedPayload),
       react: AdminPaymentSuccessEmail({ appUrl, payload: normalizedPayload }),
-      replyTo: normalizedPayload.customer.email,
+      replyTo: normalizedPayload.customer.email || "hello@aurora.crystals",
     });
 
     result.adminMessageId = getMessageId(adminResponse);
@@ -154,6 +181,7 @@ export async function sendPaymentEmails(
     console.error("Failed to send admin payment success email", {
       orderId: normalizedPayload.orderId,
       source: normalizedPayload.source,
+      financialStatus: normalizedPayload.financialStatus,
       reason: error instanceof Error ? error.message : "Unknown",
     });
 
@@ -163,11 +191,23 @@ export async function sendPaymentEmails(
     );
   }
 
+  if (!normalizedPayload.customer.email) {
+    console.warn(
+      "Skipping customer email: no customer email in Shopify payload",
+      {
+        orderId: normalizedPayload.orderId,
+        financialStatus: normalizedPayload.financialStatus,
+      },
+    );
+
+    return result;
+  }
+
   try {
     const customerResponse = await resend.emails.send({
       from: fromAddress,
       to: normalizedPayload.customer.email,
-      subject: "Thanks for your purchase - Aurora",
+      subject: getCustomerSubject(normalizedPayload),
       react: CustomerPaymentSuccessEmail({
         appUrl,
         payload: normalizedPayload,
@@ -180,6 +220,7 @@ export async function sendPaymentEmails(
     console.error("Failed to send customer payment success email", {
       orderId: normalizedPayload.orderId,
       source: normalizedPayload.source,
+      financialStatus: normalizedPayload.financialStatus,
       reason: error instanceof Error ? error.message : "Unknown",
     });
 

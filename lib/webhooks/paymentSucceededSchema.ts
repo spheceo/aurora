@@ -8,14 +8,14 @@ const ShopifyOrderLineItemSchema = z
   .object({
     title: z.string().trim().min(1).optional(),
     name: z.string().trim().min(1).optional(),
-    quantity: z.number().int().min(1),
+    quantity: z.number().int().min(1).optional(),
     price: MoneyStringSchema.optional(),
   })
   .passthrough();
 
 const ShopifyCustomerSchema = z
   .object({
-    email: z.string().email().optional(),
+    email: z.string().trim().min(1).optional(),
     first_name: z.string().trim().min(1).optional(),
     last_name: z.string().trim().min(1).optional(),
   })
@@ -33,23 +33,27 @@ const ShopifyShippingAddressSchema = z
 
 export const PaymentSucceededWebhookSchema = z
   .object({
-    id: z.union([z.string(), z.number()]),
+    id: z.union([z.string(), z.number()]).optional(),
     name: z.string().trim().min(1).optional(),
-    order_number: z.number().int().optional(),
-    contact_email: z.string().email().optional(),
-    email: z.string().email().optional(),
+    order_number: z.union([z.string(), z.number()]).optional(),
+    contact_email: z.string().trim().min(1).optional(),
+    email: z.string().trim().min(1).optional(),
     customer: ShopifyCustomerSchema.optional(),
-    line_items: z.array(ShopifyOrderLineItemSchema).min(1),
+    line_items: z.array(ShopifyOrderLineItemSchema).optional(),
     currency: z
       .string()
       .trim()
       .length(3, "currency must be a 3-letter ISO code")
-      .transform((value) => value.toUpperCase()),
+      .transform((value) => value.toUpperCase())
+      .optional(),
     current_total_price: MoneyStringSchema.optional(),
     total_price: MoneyStringSchema.optional(),
-    processed_at: z.string().datetime().optional(),
-    updated_at: z.string().datetime().optional(),
-    created_at: z.string().datetime().optional(),
+    financial_status: z.string().trim().min(1).optional(),
+    cancel_reason: z.string().trim().min(1).optional(),
+    cancelled_at: z.string().trim().min(1).optional(),
+    processed_at: z.string().trim().min(1).optional(),
+    updated_at: z.string().trim().min(1).optional(),
+    created_at: z.string().trim().min(1).optional(),
     shipping_address: ShopifyShippingAddressSchema.optional(),
   })
   .passthrough();

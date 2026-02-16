@@ -7,12 +7,16 @@ import { PaymentSucceededWebhookSchema } from "@/lib/webhooks/paymentSucceededSc
 
 export const runtime = "nodejs";
 
-function getWebhookOrderId(payload: { id: string | number; name?: string }) {
+function getWebhookOrderId(payload: { id?: string | number; name?: string }) {
   if (payload.name) {
     return payload.name;
   }
 
-  return String(payload.id);
+  if (typeof payload.id !== "undefined") {
+    return String(payload.id);
+  }
+
+  return "Unknown order";
 }
 
 export async function POST(request: Request) {

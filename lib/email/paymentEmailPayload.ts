@@ -1,11 +1,14 @@
 export type PaymentEmailPayload = {
   source: "shopify";
   orderId: string;
-  paidAt: string;
+  eventAt: string;
   amount: number;
   currency: string;
+  financialStatus: string;
+  cancelReason?: string;
+  cancelledAt?: string;
   customer: {
-    email: string;
+    email?: string;
     firstName?: string;
     lastName?: string;
   };

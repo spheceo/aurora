@@ -24,43 +24,78 @@ function getCustomerName(firstName?: string, fallback = "there") {
   return firstName?.trim() || fallback;
 }
 
+function getStatusCopy(status: string) {
+  if (status === "paid") {
+    return {
+      eyebrow: "Payment received",
+      title: "Thank you for your purchase.",
+      subtitle:
+        "Your payment was successful and your order is now being prepared.",
+    };
+  }
+
+  if (status === "voided") {
+    return {
+      eyebrow: "Order update",
+      title: "Your order payment was voided.",
+      subtitle:
+        "We received a payment status update from Shopify and wanted to keep you informed.",
+    };
+  }
+
+  return {
+    eyebrow: "Order update",
+    title: `Your order status is now: ${status}.`,
+    subtitle:
+      "We received a payment-related update from Shopify and wanted to keep you informed.",
+  };
+}
+
 // TODO: review template copy/styles before production.
 export function CustomerPaymentSuccessEmail({
   appUrl,
   payload,
 }: CustomerPaymentSuccessEmailProps) {
+  const statusCopy = getStatusCopy(payload.financialStatus);
+
   return (
     <AuroraEmailShell
-      previewText={`Thanks for your purchase, order ${payload.orderId}`}
-      eyebrow="Payment received"
-      title={`Thank you, ${getCustomerName(payload.customer.firstName)}.`}
-      subtitle="Your payment was successful and your order is now being prepared."
+      previewText={`Order ${payload.orderId} update: ${payload.financialStatus}`}
+      eyebrow={statusCopy.eyebrow}
+      title={`${statusCopy.title} ${getCustomerName(payload.customer.firstName)}.`}
+      subtitle={statusCopy.subtitle}
       ctaHref={appUrl}
-      ctaLabel="Continue shopping"
+      ctaLabel="Visit Aurora"
       appUrl={appUrl}
     >
       <Section style={styles.card}>
         <Text style={styles.paragraph}>
-          We are grateful for your purchase. Below is a confirmation summary for
-          your records.
+          Here is your latest order summary for reference.
         </Text>
 
         <Section style={styles.summaryGrid}>
           <Text style={styles.summaryLabel}>Order ID</Text>
           <Text style={styles.summaryValue}>{payload.orderId}</Text>
 
-          <Text style={styles.summaryLabel}>Total paid</Text>
+          <Text style={styles.summaryLabel}>Payment status</Text>
+          <Text style={styles.summaryValue}>{payload.financialStatus}</Text>
+
+          <Text style={styles.summaryLabel}>Order total</Text>
           <Text style={styles.summaryValue}>
             {formatCurrency(payload.amount, payload.currency)}
           </Text>
         </Section>
 
-        <Text style={styles.summaryLabel}>Items purchased</Text>
-        {payload.items.map((item, index) => (
-          <Text key={`${item.title}-${index}`} style={styles.itemRow}>
-            {item.quantity} x {item.title}
-          </Text>
-        ))}
+        {payload.items.length > 0 ? (
+          <>
+            <Text style={styles.summaryLabel}>Items</Text>
+            {payload.items.map((item, index) => (
+              <Text key={`${item.title}-${index}`} style={styles.itemRow}>
+                {item.quantity} x {item.title}
+              </Text>
+            ))}
+          </>
+        ) : null}
 
         <Text style={styles.paragraph}>
           Questions about your order? Contact us at{" "}
