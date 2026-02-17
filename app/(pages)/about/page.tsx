@@ -49,18 +49,20 @@ export default function About() {
             <FaArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform duration-300" />
             <span className="text-xs font-medium">Back</span>
           </Link>
-          <Link href="/" className="cursor-pointer">
-            <h1 className="text-xl font-medium">Aurora.</h1>
-          </Link>
           <div className="flex items-center gap-4">
-            <Link href="/shop" className="group cursor-pointer hidden sm:block">
-              <span className="text-xs">Shop</span>
-              <div className="bg-foreground h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
+            <Link href="/" className="cursor-pointer">
+              <h1 className="text-xl font-medium">Aurora.</h1>
             </Link>
-            <Link href="/contact" className="group cursor-pointer hidden sm:block">
-              <span className="text-xs">Contact</span>
-              <div className="bg-foreground h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
-            </Link>
+            <div className="hidden sm:flex items-center gap-4">
+              <Link href="/shop" className="group cursor-pointer">
+                <span className="text-xs">Shop</span>
+                <div className="bg-foreground h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
+              </Link>
+              <Link href="/contact" className="group cursor-pointer">
+                <span className="text-xs">Contact</span>
+                <div className="bg-foreground h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
