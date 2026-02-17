@@ -144,7 +144,7 @@ function DropdownMenuContent({
   React.useEffect(() => {
     if (!open) return;
 
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: Event) => {
       if (
         triggerRef.current &&
         contentRef.current &&
