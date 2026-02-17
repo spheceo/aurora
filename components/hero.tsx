@@ -23,6 +23,17 @@ export default forwardRef(function Hero(
   const heroRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
+    // Disable hero overlap animation on mobile to avoid partial scroll transforms.
+    if (window.innerWidth < 768) {
+      gsap.set(heroRef.current, {
+        y: 0,
+        scale: 1,
+        opacity: 1,
+        force3D: true,
+      });
+      return;
+    }
+
     // Set initial state explicitly with GPU acceleration
     gsap.set(heroRef.current, {
       y: 0,
