@@ -3,6 +3,7 @@ import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import gsap from "gsap";
+import Cart from "@/components/cart";
 
 export default function About() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -45,24 +46,19 @@ export default function About() {
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
         <div className="flex items-center justify-between px-4 md:px-15 py-3 md:py-4">
-          <Link href="/" className="flex items-center gap-2 group cursor-pointer">
-            <FaArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform duration-300" />
-            <span className="text-xs font-medium">Back</span>
-          </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex-1">
+            <Link href="/" className="inline-flex items-center gap-2 group cursor-pointer">
+              <FaArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform duration-300" />
+              <span className="text-xs font-medium">Back</span>
+            </Link>
+          </div>
+          <div className="flex-1 flex justify-center">
             <Link href="/" className="cursor-pointer">
               <h1 className="text-xl font-medium">Aurora.</h1>
             </Link>
-            <div className="hidden sm:flex items-center gap-4">
-              <Link href="/shop" className="group cursor-pointer">
-                <span className="text-xs">Shop</span>
-                <div className="bg-foreground h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
-              </Link>
-              <Link href="/contact" className="group cursor-pointer">
-                <span className="text-xs">Contact</span>
-                <div className="bg-foreground h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
-              </Link>
-            </div>
+          </div>
+          <div className="flex-1 flex justify-end">
+            <Cart />
           </div>
         </div>
       </nav>

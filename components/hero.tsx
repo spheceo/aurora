@@ -61,7 +61,7 @@ export default forwardRef(function Hero(
     <div
       id="hero"
       ref={heroRef}
-      className="h-screen md:h-dvh bg-black flex flex-col sticky top-0 z-10 will-change-transform will-change-opacity"
+      className="h-svh md:h-dvh bg-black flex flex-col md:sticky md:top-0 z-10 will-change-transform will-change-opacity"
     >
       {/*
         Banner only displays if banner content
@@ -89,7 +89,7 @@ export default forwardRef(function Hero(
           sizes="100vw"
           quality={85}
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent flex flex-col items-start justify-between px-4 md:px-15 pb-8 md:pb-15 pt-8 md:pt-10">
+        <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent flex flex-col items-start justify-between px-4 md:px-15 pt-[calc(env(safe-area-inset-top)+2rem)] pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-15 md:pt-10">
           {/*Navbar - Mobile*/}
           <div className="flex md:hidden items-center justify-between w-full h-16">
             <Image
