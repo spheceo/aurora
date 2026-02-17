@@ -56,7 +56,7 @@ export default function Cart() {
           )}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[calc(100vw-32px)] sm:w-96 p-0 bg-background border-border rounded-none" align="end" sideOffset={8}>
+      <DropdownMenuContent className="w-[min(24rem,calc(100vw-1rem))] max-h-[calc(100dvh-5rem)] overflow-hidden p-0 bg-background border-border rounded-none" align="end" sideOffset={8}>
         {/* Header */}
         <div className="flex items-center justify-between px-3 md:px-4 py-2 md:py-3 border-b border-border">
           <h3 className="text-sm font-medium uppercase tracking-wider text-foreground">Cart ({itemCount})</h3>
@@ -73,7 +73,7 @@ export default function Cart() {
         ) : (
           <>
             {/* Items */}
-            <div className="max-h-60 md:max-h-80 overflow-y-auto">
+            <div className="max-h-[55dvh] md:max-h-80 overflow-y-auto">
               {items.map((item, index) => (
                 <div key={item.id} className={`px-3 md:px-4 py-3 md:py-4 ${index !== items.length - 1 ? 'border-b border-border' : ''}`}>
                   <div className="flex gap-3">

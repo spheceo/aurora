@@ -115,7 +115,7 @@ export default function Search() {
         </button>
       </DialogTrigger>
       <DialogContent
-        className="w-[95vw] sm:w-[85vw] md:w-[75vw] max-h-[70vh] overflow-y-auto p-0 bg-background border-border rounded-none overscroll-contain"
+        className="left-0 top-0 h-[100dvh] w-screen max-w-none max-h-[100dvh] translate-x-0 translate-y-0 overflow-y-auto rounded-none border-border p-0 bg-background overscroll-y-contain sm:left-1/2 sm:top-1/2 sm:h-auto sm:w-[85vw] sm:max-w-[85vw] sm:max-h-[85dvh] sm:-translate-x-1/2 sm:-translate-y-1/2 md:w-[75vw] md:max-w-[75vw]"
         onWheel={(e) => e.stopPropagation()}
         onTouchMove={(e) => e.stopPropagation()}
       >

@@ -106,7 +106,7 @@ function DialogOverlay({ className, ...props }: DialogOverlayProps) {
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm",
+        "fixed inset-0 z-[90] bg-black/50 backdrop-blur-sm",
         className
       )}
       onClick={() => setOpen(false)}
@@ -170,7 +170,7 @@ function DialogContent({
         onWheel={handleWheel}
         onTouchMove={handleTouchMove}
         className={cn(
-          "fixed z-50 bg-background border shadow-lg outline-none",
+          "fixed z-[100] bg-background border shadow-lg outline-none",
           variant === "default"
             ? "top-[50%] left-[50%] max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] rounded-lg p-6 sm:max-w-lg max-h-[90vh] overflow-y-auto"
             : "left-[50%] -translate-x-1/2 bottom-0 w-[95%] sm:w-[600px] max-h-[80vh] overflow-y-auto rounded-t-3xl p-0",

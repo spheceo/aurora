@@ -68,7 +68,7 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-xs font-medium uppercase tracking-wider">Connect</h3>
             <ul className="space-y-2">
-              <li>
+              {/* <li>
                 <a
                   href="https://www.instagram.com/aurora_crystalss/"
                   target="_blank"
@@ -76,8 +76,8 @@ export default function Footer() {
                 >
                   Instagram
                 </a>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <a
                   href="https://www.tiktok.com/@aurora_crystalss"
                   target="_blank"
@@ -85,7 +85,7 @@ export default function Footer() {
                 >
                   TikTok
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

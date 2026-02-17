@@ -41,7 +41,7 @@ export default async function Home() {
     name: siteConfig.legalName,
     url: siteConfig.url,
     logo: `${siteConfig.url}/logo.png`,
-    sameAs: [siteConfig.social.instagram, siteConfig.social.tiktok],
+    // sameAs: [siteConfig.social.instagram, siteConfig.social.tiktok],
   };
 
   return (

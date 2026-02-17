@@ -91,41 +91,54 @@ function DropdownMenuContent({
   const [position, setPosition] = React.useState({ top: 0, left: 0 });
   const [isMounted, setIsMounted] = React.useState(false);
 
-  // Calculate position when opened
+  const positionDropdown = React.useCallback(() => {
+    if (!triggerRef.current || !contentRef.current) return;
+
+    const triggerRect = triggerRef.current.getBoundingClientRect();
+    const contentRect = contentRef.current.getBoundingClientRect();
+    const viewportPadding = 8;
+    const contentWidth = contentRect.width || contentRef.current.offsetWidth || 220;
+    const contentHeight = contentRect.height || contentRef.current.offsetHeight || 0;
+
+    let left = align === "end" ? triggerRect.right - contentWidth : triggerRect.left;
+    let top = triggerRect.bottom + sideOffset;
+
+    // Keep within horizontal viewport bounds.
+    left = Math.min(
+      Math.max(left, viewportPadding),
+      window.innerWidth - contentWidth - viewportPadding
+    );
+
+    // Flip above trigger when there's no room below.
+    if (top + contentHeight > window.innerHeight - viewportPadding) {
+      top = triggerRect.top - contentHeight - sideOffset;
+    }
+
+    top = Math.max(top, viewportPadding);
+
+    setPosition({ top, left });
+    setIsMounted(true);
+  }, [align, sideOffset, triggerRef]);
+
+  // Calculate/recalculate position while open.
   React.useEffect(() => {
-    if (!open || !triggerRef.current) {
+    if (!open) {
       setIsMounted(false);
       return;
     }
 
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      if (triggerRef.current) {
-        const triggerRect = triggerRef.current.getBoundingClientRect();
+    const raf = requestAnimationFrame(positionDropdown);
+    const handleReposition = () => positionDropdown();
 
-        let top = triggerRect.bottom + sideOffset;
-        let left: number;
+    window.addEventListener("resize", handleReposition);
+    window.addEventListener("scroll", handleReposition, true);
 
-        if (align === "end") {
-          left = triggerRect.right - 200; // Default width
-        } else {
-          left = triggerRect.left;
-        }
-
-        // Keep within viewport (use actual content width or trigger width as fallback)
-        const contentWidth = contentRef.current?.offsetWidth || 384;
-        if (left + contentWidth > window.innerWidth) {
-          left = window.innerWidth - contentWidth - 8;
-        }
-        if (left < 8) left = 8;
-
-        setPosition({ top, left });
-        setIsMounted(true);
-      }
-    }, 10);
-
-    return () => clearTimeout(timer);
-  }, [open, align, sideOffset]);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", handleReposition);
+      window.removeEventListener("scroll", handleReposition, true);
+    };
+  }, [open, positionDropdown]);
 
   // Click outside to close
   React.useEffect(() => {
@@ -143,7 +156,11 @@ function DropdownMenuContent({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
   }, [open, setOpen]);
 
   // Close on ESC

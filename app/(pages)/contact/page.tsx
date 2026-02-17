@@ -190,20 +190,20 @@ export default function Contact() {
             <div className="border-t border-border pt-8">
               <h3 className="text-sm font-medium mb-4">Follow Us</h3>
               <div className="flex gap-4">
-                <a
+                {/* <a
                   href="https://www.instagram.com/aurora_crystalss/"
                   target="_blank"
                   className="px-4 py-2 border border-border text-xs hover:bg-foreground hover:text-background hover:border-foreground transition-all cursor-pointer"
                 >
                   Instagram
-                </a>
-                <a
+                </a> */}
+                {/* <a
                   href="https://www.tiktok.com/@aurora_crystalss"
                   target="_blank"
                   className="px-4 py-2 border border-border text-xs hover:bg-foreground hover:text-background hover:border-foreground transition-all cursor-pointer"
                 >
                   TikTok
-                </a>
+                </a> */}
               </div>
             </div>
 

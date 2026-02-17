@@ -20,10 +20,10 @@ export const siteConfig = {
     "healing crystals",
     "crystal gifts",
   ],
-  social: {
-    instagram: "https://www.instagram.com/aurora_crystalss/",
-    tiktok: "https://www.tiktok.com/@aurora_crystalss",
-  },
+  // social: {
+  //   instagram: "https://www.instagram.com/aurora_crystalss/",
+  //   tiktok: "https://www.tiktok.com/@aurora_crystalss",
+  // },
 };
 
 export const staticRoutes = ["/", "/shop", "/about", "/contact", "/privacy", "/terms"] as const;
