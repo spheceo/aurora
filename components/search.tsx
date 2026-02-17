@@ -143,7 +143,7 @@ export default function Search() {
                 placeholder="Search..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="placeholder:text-[#9A9A9A] outline-none w-full text-sm bg-transparent text-foreground"
+                className="placeholder:text-[#9A9A9A] outline-none w-full text-[16px] sm:text-sm bg-transparent text-foreground"
               />
             </div>
             {/* Price Range Dropdown */}

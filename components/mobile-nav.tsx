@@ -57,7 +57,7 @@ export default function MobileNav() {
 
       {/* Slide-in Drawer */}
       <div
-        className={`fixed top-0 right-0 h-full w-[75vw] max-w-[300px] bg-background z-[55] md:hidden transition-transform duration-300 ease-out ${
+        className={`fixed top-0 right-0 h-full w-[75vw] max-w-[300px] bg-background text-foreground z-[55] md:hidden transition-transform duration-300 ease-out ${
           isOpen ? "translate-x-0 pointer-events-auto" : "translate-x-full pointer-events-none"
         }`}
       >

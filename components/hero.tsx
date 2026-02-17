@@ -61,7 +61,7 @@ export default forwardRef(function Hero(
     <div
       id="hero"
       ref={heroRef}
-      className="h-dvh flex flex-col sticky top-0 z-10 will-change-transform will-change-opacity"
+      className="h-screen md:h-dvh bg-black flex flex-col sticky top-0 z-10 will-change-transform will-change-opacity"
     >
       {/*
         Banner only displays if banner content
