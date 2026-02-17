@@ -8,7 +8,7 @@ import Cart from "./cart";
 import MobileNav from "./mobile-nav";
 import { FaArrowRight } from "react-icons/fa";
 
-import { forwardRef, Ref, useRef } from "react";
+import { forwardRef, Ref, useEffect, useRef, useState } from "react";
 import Search from "./search";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -21,10 +21,20 @@ export default forwardRef(function Hero(
   ref: Ref<HTMLDivElement>,
 ) {
   const heroRef = useRef<HTMLDivElement>(null);
+  const [disableTouchMotion, setDisableTouchMotion] = useState(false);
+
+  useEffect(() => {
+    // Treat touch/coarse-pointer devices as mobile behavior: no sticky overlap motion.
+    const isTouchDevice =
+      ScrollTrigger.isTouch > 0 ||
+      window.matchMedia("(pointer: coarse)").matches;
+
+    setDisableTouchMotion(isTouchDevice);
+  }, []);
 
   useGSAP(() => {
-    // Disable hero overlap animation on mobile to avoid partial scroll transforms.
-    if (window.innerWidth < 768) {
+    // Fully disable hero overlap animation on touch/mobile devices.
+    if (disableTouchMotion) {
       gsap.set(heroRef.current, {
         y: 0,
         scale: 1,
@@ -66,13 +76,15 @@ export default forwardRef(function Hero(
     }, 100);
 
     return () => clearTimeout(timeout);
-  }, { scope: heroRef });
+  }, { scope: heroRef, dependencies: [disableTouchMotion], revertOnUpdate: true });
 
   return (
     <div
       id="hero"
       ref={heroRef}
-      className="h-svh md:h-dvh bg-black flex flex-col md:sticky md:top-0 z-10 will-change-transform will-change-opacity"
+      className={`h-svh bg-black flex flex-col z-10 will-change-transform will-change-opacity ${
+        disableTouchMotion ? "" : "md:h-dvh md:sticky md:top-0"
+      }`}
     >
       {/*
         Banner only displays if banner content

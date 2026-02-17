@@ -1,7 +1,8 @@
 import { env } from "@/lib/env/server";
 
-const fallbackUrl = "https://www.aurora-za.com";
-const baseUrl = (env.APP_URL ?? fallbackUrl).replace(/\/$/, "");
+const fallbackUrl = "https://aurora-za.com";
+const configuredUrl = (env.APP_URL ?? fallbackUrl).replace(/\/$/, "");
+const baseUrl = configuredUrl.replace(/^https?:\/\/www\.aurora-za\.com$/i, "https://aurora-za.com");
 
 export const siteConfig = {
   name: "Aurora ZA",
