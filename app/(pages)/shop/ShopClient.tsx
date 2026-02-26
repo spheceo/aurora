@@ -8,7 +8,7 @@ import { ProductsResponseSchema } from "@/lib/products";
 import { CollectionsResponseSchema } from "@/lib/collections";
 import { LuSearch, LuChevronDown, LuArrowUpDown, LuX } from "react-icons/lu";
 import { FiShoppingCart } from "react-icons/fi";
-import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import { toast } from "@/components/ui/custom-toast";
 import { parseAsString, useQueryState } from "nuqs";
 import {
@@ -182,12 +182,8 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
         <div className="flex items-center justify-between px-4 md:px-15 py-3 md:py-4">
-          <Link href="/" className="flex items-center gap-2 group cursor-pointer">
-            <FaArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform duration-300" />
-            <span className="text-xs font-medium">Back</span>
-          </Link>
-          <Link href="/" className="cursor-pointer">
-            <h1 className="text-xl font-medium">Aurora.</h1>
+          <Link href="/" className="inline-flex items-center cursor-pointer">
+            <Image src="/logo.png" alt="Aurora logo" width={34} height={34} />
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/about" className="group cursor-pointer hidden sm:block">
