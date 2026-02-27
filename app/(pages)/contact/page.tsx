@@ -1,222 +1,84 @@
-"use client";
-import { useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FaArrowLeft } from "react-icons/fa";
-import gsap from "gsap";
 import Cart from "@/components/cart";
 
-export default function Contact() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Animate hero on mount
-    if (heroRef.current) {
-      gsap.fromTo(
-        heroRef.current.querySelectorAll(".hero-animate"),
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: "power3.out",
-        }
-      );
-    }
-
-    // Animate content sections
-    if (contentRef.current) {
-      gsap.fromTo(
-        contentRef.current.querySelectorAll(".content-animate"),
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: "power3.out",
-        }
-      );
-    }
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Add form submission logic here
-    console.log("Form submitted");
-  };
-
+export default function ContactPage() {
   return (
     <div className="min-h-dvh bg-background">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
-        <div className="flex items-center justify-between px-4 md:px-15 py-3 md:py-4">
-          <div className="flex-1">
-            <Link href="/" className="inline-flex items-center cursor-pointer">
-              <Image src="/logo.png" alt="Aurora logo" width={34} height={34} />
-            </Link>
-          </div>
-          <div className="flex-1" />
-          <div className="flex-1 flex justify-end">
-            <Cart />
-          </div>
+      <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
+        <div className="flex items-center justify-between px-4 py-3 md:px-15 md:py-4">
+          <Link href="/" className="inline-flex items-center">
+            <Image src="/logo.png" alt="Aurora logo" width={34} height={34} />
+          </Link>
+          <Cart />
         </div>
       </nav>
 
-      {/* Contact Hero */}
-      <div ref={heroRef} className="px-4 md:px-15 pt-16 md:pt-20 pb-12 md:pb-16">
-        <div>
-          <p className="hero-animate text-[10px] font-medium text-[#9A9A9A] tracking-widest uppercase mb-4">
-            [Get in Touch]
-          </p>
-          <h1 className="hero-animate text-4xl md:text-5xl lg:text-7xl font-medium leading-tight mb-8">
-            Let's Start
-            <br />
-            a Conversation
-          </h1>
-          <p className="hero-animate text-base md:text-lg text-[#9A9A9A] max-w-3xl">
-            Have a question about our crystals? Looking for something specific?
-            We'd love to hear from you.
-          </p>
-        </div>
-      </div>
+      <main className="px-4 py-10 md:px-15 md:py-14">
+        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1fr_0.9fr]">
+          <section className="overflow-hidden rounded-xl border border-[#e7dede] bg-white lg:h-full">
+            <div className="relative h-[320px] md:h-[540px] lg:h-full">
+              <Image
+                src="/cover/02.png"
+                alt="Aurora crystal collection"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+          </section>
 
-      {/* Contact Content */}
-      <div ref={contentRef} className="px-4 md:px-15 pb-16 md:pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16">
-          {/* Contact Form */}
-          <div className="content-animate">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label htmlFor="name" className="text-xs font-medium">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  required
-                  className="w-full px-4 py-3 border border-border bg-transparent outline-none focus:border-foreground transition-colors"
-                  placeholder="Your name"
-                />
-              </div>
+          <section className="rounded-xl border border-[#e7dede] bg-white p-5 md:p-7">
+            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-[#8a7678]">
+              Contact us
+            </p>
+            <h1 className="mt-3 text-2xl leading-tight md:text-4xl">
+              Questions about your order
+              <br />
+              or shopping support?
+            </h1>
 
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-xs font-medium">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  required
-                  className="w-full px-4 py-3 border border-border bg-transparent outline-none focus:border-foreground transition-colors"
-                  placeholder="your@email.com"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="subject" className="text-xs font-medium">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  required
-                  className="w-full px-4 py-3 border border-border bg-transparent outline-none focus:border-foreground transition-colors"
-                  placeholder="How can we help?"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="message" className="text-xs font-medium">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  required
-                  rows={6}
-                  className="w-full px-4 py-3 border border-border bg-transparent outline-none focus:border-foreground transition-colors resize-none"
-                  placeholder="Tell us more..."
-                />
-              </div>
-
+            <form className="mt-6 space-y-3">
+              <input
+                type="text"
+                placeholder="Name *"
+                className="w-full rounded-sm border border-[#ece6e7] bg-[#faf8f8] px-4 py-3 text-sm outline-none transition-colors focus:border-[#811A21]"
+              />
+              <input
+                type="email"
+                placeholder="Email *"
+                className="w-full rounded-sm border border-[#ece6e7] bg-[#faf8f8] px-4 py-3 text-sm outline-none transition-colors focus:border-[#811A21]"
+              />
+              <input
+                type="tel"
+                placeholder="Phone number"
+                className="w-full rounded-sm border border-[#ece6e7] bg-[#faf8f8] px-4 py-3 text-sm outline-none transition-colors focus:border-[#811A21]"
+              />
+              <textarea
+                rows={6}
+                placeholder="Message"
+                className="w-full resize-none rounded-sm border border-[#ece6e7] bg-[#faf8f8] px-4 py-3 text-sm outline-none transition-colors focus:border-[#811A21]"
+              />
               <button
-                type="submit"
-                className="w-full px-6 py-3 bg-foreground text-background hover:bg-foreground/90 transition-colors text-xs font-medium tracking-wider uppercase cursor-pointer"
+                type="button"
+                className="w-full rounded-sm bg-[#811A21] px-5 py-3 text-xs font-semibold tracking-[0.18em] uppercase text-white transition-colors hover:bg-[#6f161d]"
               >
                 Send Message
               </button>
             </form>
-          </div>
 
-          {/* Contact Info */}
-          <div className="content-animate space-y-12">
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <h3 className="text-sm font-medium">Email Us</h3>
-                <a
-                  href="mailto:hello@aurora.crystals"
-                  className="text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer"
-                >
-                  hello@aurora.crystals
-                </a>
-              </div>
-
-              <div className="space-y-3">
-                <h3 className="text-sm font-medium">Response Time</h3>
-                <p className="text-[#9A9A9A]">
-                  We typically respond to all inquiries within 24-48 hours
-                  during business days.
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <h3 className="text-sm font-medium">Custom Orders</h3>
-                <p className="text-[#9A9A9A]">
-                  Looking for something specific? We can help you find the
-                  perfect crystal or create a custom order tailored to your
-                  needs.
-                </p>
-              </div>
-            </div>
-
-            <div className="border-t border-border pt-8">
-              <h3 className="text-sm font-medium mb-4">Follow Us</h3>
-              <div className="flex gap-4">
-                {/* <a
-                  href="https://www.instagram.com/aurora_crystalss/"
-                  target="_blank"
-                  className="px-4 py-2 border border-border text-xs hover:bg-foreground hover:text-background hover:border-foreground transition-all cursor-pointer"
-                >
-                  Instagram
-                </a> */}
-                {/* <a
-                  href="https://www.tiktok.com/@aurora_crystalss"
-                  target="_blank"
-                  className="px-4 py-2 border border-border text-xs hover:bg-foreground hover:text-background hover:border-foreground transition-all cursor-pointer"
-                >
-                  TikTok
-                </a> */}
-              </div>
-            </div>
-
-            <div className="border-t border-border pt-8">
-              <p className="text-sm text-[#9A9A9A]">
-                Can't find what you're looking for? Browse our collection or
-                get in touch for personalized recommendations.
-              </p>
-              <Link
-                href="/shop"
-                className="inline-flex items-center gap-2 mt-4 text-sm font-medium group cursor-pointer"
+            <p className="mt-7 text-sm text-[#65595a]">
+              For sales and support, contact{" "}
+              <a
+                href="mailto:hello@aurora.crystals"
+                className="underline underline-offset-2"
               >
-                <span>Shop Collection</span>
-                <FaArrowLeft className="rotate-180 group-hover:rotate-180 group-hover:translate-x-1 transition-all duration-300 w-3 h-3" />
-              </Link>
-            </div>
-          </div>
+                hello@aurora.crystals
+              </a>
+            </p>
+          </section>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
