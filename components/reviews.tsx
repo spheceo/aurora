@@ -1,9 +1,9 @@
 "use client";
 
-import { FaStar } from "react-icons/fa";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { FaStar } from "react-icons/fa";
 
 export default function Reviews() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -17,7 +17,8 @@ export default function Reviews() {
       rating: 5,
       date: "January 2025",
       title: "Absolutely beautiful!",
-      comment: "The crystal quality exceeded my expectations. The colors are stunning and it looks even better in person. Will definitely be ordering more.",
+      comment:
+        "The crystal quality exceeded my expectations. The colors are stunning and it looks even better in person. Will definitely be ordering more.",
     },
     {
       id: 2,
@@ -25,7 +26,8 @@ export default function Reviews() {
       rating: 4,
       date: "December 2024",
       title: "Great addition to my collection",
-      comment: "Perfect size and beautiful clarity. Arrived safely packaged. Only giving 4 stars because shipping took a bit longer than expected.",
+      comment:
+        "Perfect size and beautiful clarity. Arrived safely packaged. Only giving 4 stars because shipping took a bit longer than expected.",
     },
     {
       id: 3,
@@ -33,7 +35,8 @@ export default function Reviews() {
       rating: 5,
       date: "January 2025",
       title: "Mesmerizing piece",
-      comment: "This crystal has such a powerful presence. The energy is amazing and it's become the centerpiece of my meditation space.",
+      comment:
+        "This crystal has such a powerful presence. The energy is amazing and it's become the centerpiece of my meditation space.",
     },
     {
       id: 4,
@@ -41,7 +44,8 @@ export default function Reviews() {
       rating: 5,
       date: "January 2025",
       title: "Stunning quality",
-      comment: "I've purchased crystals from many places, but Aurora has the best quality I've seen. The attention to detail is remarkable.",
+      comment:
+        "I've purchased crystals from many places, but Aurora has the best quality I've seen. The attention to detail is remarkable.",
     },
     {
       id: 5,
@@ -49,7 +53,8 @@ export default function Reviews() {
       rating: 5,
       date: "December 2024",
       title: "Perfect gift",
-      comment: "Bought this as a gift for my sister and she absolutely loved it. The packaging was beautiful and the crystal is gorgeous.",
+      comment:
+        "Bought this as a gift for my sister and she absolutely loved it. The packaging was beautiful and the crystal is gorgeous.",
     },
     {
       id: 6,
@@ -57,11 +62,13 @@ export default function Reviews() {
       rating: 4,
       date: "November 2024",
       title: "Very satisfied",
-      comment: "Great crystal, excellent customer service. The photos on the website don't do it justice - it's even more beautiful in person.",
+      comment:
+        "Great crystal, excellent customer service. The photos on the website don't do it justice - it's even more beautiful in person.",
     },
   ];
 
-  const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+  const averageRating =
+    reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
 
   // Intersection Observer for performance - only animate when in viewport
   useEffect(() => {
@@ -74,7 +81,7 @@ export default function Reviews() {
           }
         });
       },
-      { threshold: 0.1 } // Trigger when 10% visible
+      { threshold: 0.1 }, // Trigger when 10% visible
     );
 
     if (containerRef.current) {
@@ -84,44 +91,53 @@ export default function Reviews() {
     return () => observer.disconnect();
   }, []);
 
-  useGSAP(() => {
-    if (!isVisible) return;
+  useGSAP(
+    () => {
+      if (!isVisible) return;
 
-    const cards = containerRef.current?.querySelectorAll(".review-card");
-    if (cards && cards.length > 0) {
-      gsap.fromTo(
-        cards,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power3.out",
-          force3D: true, // GPU acceleration
-        }
-      );
-    }
-  }, { scope: containerRef, dependencies: [isVisible] });
+      const cards = containerRef.current?.querySelectorAll(".review-card");
+      if (cards && cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power3.out",
+            force3D: true, // GPU acceleration
+          },
+        );
+      }
+    },
+    { scope: containerRef, dependencies: [isVisible] },
+  );
 
   return (
-    <div id="reviews" ref={containerRef} className="bg-white py-12 md:py-16 px-4 md:px-15 relative z-50">
+    <div
+      id="reviews"
+      ref={containerRef}
+      className="bg-white py-12 md:py-16 px-4 md:px-15 relative z-50"
+    >
       <div className="space-y-8">
         {/* Reviews Header */}
         <div>
-          <p className="text-[10px] font-medium text-[#9A9A9A] tracking-widest uppercase mb-3">
+          <p className="text-[10px] font-medium text-[#8a7678] tracking-widest uppercase mb-3">
             [Customer Reviews]
           </p>
           <div className="flex items-center gap-6 flex-wrap">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium">What Our Customers Say</h2>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium">
+              What Our Customers Say
+            </h2>
             <div className="flex items-center gap-2">
               <div className="flex">
-                {[...Array(5)].map((_, i) => (
+                {[1, 2, 3, 4, 5].map((star) => (
                   <FaStar
-                    key={i}
+                    key={star}
                     className={`w-5 h-5 ${
-                      i < Math.floor(averageRating)
-                        ? "text-foreground fill-foreground"
+                      star <= Math.floor(averageRating)
+                        ? "text-[#811A21] fill-[#811A21]"
                         : "text-border"
                     }`}
                   />
@@ -132,6 +148,10 @@ export default function Reviews() {
               </span>
             </div>
           </div>
+          <p className="text-sm md:text-base text-[#9A9A9A] mt-3 w-full max-w-[42rem]">
+            Real feedback from customers who have styled their spaces with
+            Aurora crystals.
+          </p>
         </div>
 
         {/* Reviews Grid */}
@@ -139,16 +159,16 @@ export default function Reviews() {
           {reviews.map((review) => (
             <div
               key={review.id}
-              className="review-card border border-border p-4 md:p-6 space-y-4 hover:border-foreground/30 transition-colors"
+              className="review-card border border-border bg-white p-4 md:p-6 space-y-4 hover:border-[#d8c8ca] hover:bg-[#fffdfd] transition-colors"
             >
               {/* Rating */}
               <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
+                {[1, 2, 3, 4, 5].map((star) => (
                   <FaStar
-                    key={i}
+                    key={`${review.id}-${star}`}
                     className={`w-4 h-4 ${
-                      i < review.rating
-                        ? "text-foreground fill-foreground"
+                      star <= review.rating
+                        ? "text-[#811A21] fill-[#811A21]"
                         : "text-border"
                     }`}
                   />

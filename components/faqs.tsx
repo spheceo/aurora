@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
-import { FaPlus, FaMinus } from "react-icons/fa6";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useEffect, useRef, useState } from "react";
+import { FaMinus, FaPlus } from "react-icons/fa6";
 
 export default function FAQs() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -69,7 +69,7 @@ export default function FAQs() {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     const faqContainer = document.getElementById("faqs");
@@ -119,20 +119,28 @@ export default function FAQs() {
           stagger: 0.08,
           ease: "power3.out",
           force3D: true, // GPU acceleration
-        }
+        },
       );
     }
   }, [isVisible]);
 
   return (
-    <div id="faqs" className="bg-white py-12 md:py-16 px-4 md:px-15 relative z-50">
+    <div
+      id="faqs"
+      className="bg-white py-12 md:py-16 px-4 md:px-15 relative z-50"
+    >
       <div className="space-y-8">
         {/* Header */}
-        <div>
-          <p className="text-[10px] font-medium text-[#9A9A9A] tracking-widest uppercase mb-3">
+        <div className="text-right">
+          <p className="text-[10px] font-medium text-[#8a7678] tracking-widest uppercase mb-3">
             [Frequently Asked Questions]
           </p>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium">Questions? We've Got Answers</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium">
+            Questions? We've Got Answers
+          </h2>
+          <p className="text-sm md:text-base text-[#9A9A9A] mt-3 ml-auto w-full max-w-[42rem]">
+            Quick answers on shipping, sourcing, returns, and crystal care.
+          </p>
         </div>
 
         {/* FAQ Accordion */}
@@ -140,17 +148,24 @@ export default function FAQs() {
           {faqs.map((faq, index) => (
             <div
               key={faq.id}
-              className="faq-item border border-border overflow-hidden"
+              className={`faq-item border overflow-hidden transition-colors ${
+                openIndex === index
+                  ? "border-[#d8c8ca] bg-[#fffdfd]"
+                  : "border-border bg-white"
+              }`}
             >
               {/* Question */}
               <button
+                type="button"
                 onClick={() => toggleFAQ(index)}
-                className="w-full flex items-center justify-between px-4 md:px-6 py-4 md:py-5 text-left hover:bg-secondary/30 transition-colors cursor-pointer group"
+                className="w-full flex items-center justify-between px-4 md:px-6 py-4 md:py-5 text-left hover:bg-[#faf4f4] transition-colors cursor-pointer group"
               >
-                <span className="font-medium pr-8 text-sm md:text-base">{faq.question}</span>
+                <span className="font-medium pr-8 text-sm md:text-base">
+                  {faq.question}
+                </span>
                 <div className="flex-shrink-0">
                   {openIndex === index ? (
-                    <FaMinus className="w-4 h-4 text-foreground" />
+                    <FaMinus className="w-4 h-4 text-[#811A21]" />
                   ) : (
                     <FaPlus className="w-4 h-4 text-foreground group-hover:scale-110 transition-transform" />
                   )}

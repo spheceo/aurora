@@ -27,15 +27,21 @@ export default function AboutPage() {
       <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="flex items-center justify-between px-4 py-3 md:px-15 md:py-4">
           <Link href="/" className="inline-flex items-center">
-            <Image src="/logo.png" alt="Aurora logo" width={34} height={34} />
+            <Image
+              src="/logo.png"
+              alt="Aurora logo"
+              width={34}
+              height={34}
+              className="rounded-lg"
+            />
           </Link>
           <Cart />
         </div>
       </nav>
 
       <main className="px-4 py-10 md:px-15 md:py-14">
-        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1fr_0.9fr]">
-          <section className="overflow-hidden rounded-xl border border-[#e7dede] bg-white lg:h-full">
+        <div className="mx-auto max-w-6xl border border-[#e7dede] lg:grid lg:grid-cols-[1fr_0.9fr] lg:divide-x lg:divide-[#e7dede]">
+          <section className="overflow-hidden bg-white lg:h-full">
             <div className="relative h-[320px] md:h-[540px] lg:h-full">
               <Image
                 src="/cover/03.png"
@@ -47,7 +53,7 @@ export default function AboutPage() {
             </div>
           </section>
 
-          <section className="rounded-xl border border-[#e7dede] bg-white p-5 md:p-7">
+          <section className="bg-white p-5 md:p-7">
             <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-[#8a7678]">
               About us
             </p>
@@ -66,7 +72,7 @@ export default function AboutPage() {
               {values.map((value) => (
                 <article
                   key={value.title}
-                  className="rounded-sm border border-[#ece6e7] bg-[#faf8f8] p-3"
+                  className="border border-[#ece6e7] bg-[#faf8f8] p-3"
                 >
                   <h2 className="text-sm font-medium">{value.title}</h2>
                   <p className="mt-2 text-xs leading-relaxed text-[#6f6162]">
@@ -78,10 +84,29 @@ export default function AboutPage() {
 
             <Link
               href="/shop"
-              className="mt-7 inline-flex w-full items-center justify-center rounded-sm bg-[#811A21] px-5 py-3 text-xs font-semibold tracking-[0.18em] uppercase text-white transition-colors hover:bg-[#6f161d]"
+              className="mt-7 inline-flex w-full items-center justify-center bg-[#811A21] px-5 py-3 text-xs font-semibold tracking-[0.18em] uppercase text-white transition-colors hover:bg-[#6f161d]"
             >
               Shop Collection
             </Link>
+
+            <div className="mt-6 flex items-center gap-4 text-sm text-[#65595a]">
+              <a
+                href="https://www.instagram.com/aurora_za_"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2"
+              >
+                Instagram
+              </a>
+              <a
+                href="https://www.tiktok.com/@aurora_za_"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2"
+              >
+                TikTok
+              </a>
+            </div>
           </section>
         </div>
       </main>

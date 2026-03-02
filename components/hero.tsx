@@ -1,24 +1,23 @@
 "use client";
-import Marquee from "react-fast-marquee";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
+import { forwardRef, type Ref, useEffect, useRef, useState } from "react";
+import Marquee from "react-fast-marquee";
+import { FaArrowRight } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 import { LuMouse } from "react-icons/lu";
 import Cart from "./cart";
 import MobileNav from "./mobile-nav";
-import { FaArrowRight } from "react-icons/fa";
-
-import { forwardRef, Ref, useEffect, useRef, useState } from "react";
 import Search from "./search";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default forwardRef(function Hero(
   { data }: { data: string },
-  ref: Ref<HTMLDivElement>,
+  _ref: Ref<HTMLDivElement>,
 ) {
   const heroRef = useRef<HTMLDivElement>(null);
   const [disableTouchMotion, setDisableTouchMotion] = useState(false);
@@ -32,51 +31,58 @@ export default forwardRef(function Hero(
     setDisableTouchMotion(isTouchDevice);
   }, []);
 
-  useGSAP(() => {
-    // Fully disable hero overlap animation on touch/mobile devices.
-    if (disableTouchMotion) {
+  useGSAP(
+    () => {
+      // Fully disable hero overlap animation on touch/mobile devices.
+      if (disableTouchMotion) {
+        gsap.set(heroRef.current, {
+          y: 0,
+          scale: 1,
+          opacity: 1,
+          force3D: true,
+        });
+        return;
+      }
+
+      // Set initial state explicitly with GPU acceleration
       gsap.set(heroRef.current, {
         y: 0,
         scale: 1,
         opacity: 1,
         force3D: true,
       });
-      return;
-    }
 
-    // Set initial state explicitly with GPU acceleration
-    gsap.set(heroRef.current, {
-      y: 0,
-      scale: 1,
-      opacity: 1,
-      force3D: true,
-    });
+      // Delay ScrollTrigger creation to let Lenis initialize
+      const timeout = setTimeout(() => {
+        const scrollTrigger = ScrollTrigger.create({
+          trigger: "#signature-picks",
+          start: "top bottom",
+          end: "top top",
+          scrub: 0.5, // Add smooth scrubbing for better performance
+          onUpdate: (self) => {
+            const progress = self.progress;
+            // Use transform3d and opacity instead of expensive blur filter
+            gsap.set(heroRef.current, {
+              y: 50 * progress,
+              scale: 1 - 0.1 * progress,
+              opacity: 1 - 0.2 * progress, // Replace blur with opacity
+              force3D: true, // GPU acceleration
+            });
+          },
+        });
+        ScrollTrigger.refresh();
 
-    // Delay ScrollTrigger creation to let Lenis initialize
-    const timeout = setTimeout(() => {
-      const scrollTrigger = ScrollTrigger.create({
-        trigger: "#signature-picks",
-        start: "top bottom",
-        end: "top top",
-        scrub: 0.5, // Add smooth scrubbing for better performance
-        onUpdate: (self) => {
-          const progress = self.progress;
-          // Use transform3d and opacity instead of expensive blur filter
-          gsap.set(heroRef.current, {
-            y: 50 * progress,
-            scale: 1 - 0.10 * progress,
-            opacity: 1 - (0.2 * progress), // Replace blur with opacity
-            force3D: true, // GPU acceleration
-          });
-        },
-      });
-      ScrollTrigger.refresh();
+        return () => scrollTrigger.kill();
+      }, 100);
 
-      return () => scrollTrigger.kill();
-    }, 100);
-
-    return () => clearTimeout(timeout);
-  }, { scope: heroRef, dependencies: [disableTouchMotion], revertOnUpdate: true });
+      return () => clearTimeout(timeout);
+    },
+    {
+      scope: heroRef,
+      dependencies: [disableTouchMotion],
+      revertOnUpdate: true,
+    },
+  );
 
   return (
     <div
@@ -155,7 +161,7 @@ export default forwardRef(function Hero(
               </div>
 
               {/*Veritcal Line*/}
-              <div className="h-6 w-[1.5px] rounded-2xl bg-white" />
+              <div className="h-6 w-[1.5px] bg-white" />
 
               <Search />
               <Cart />
@@ -180,14 +186,23 @@ export default forwardRef(function Hero(
                 of the earth and selected for its clarity, color, and presence.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
-                <button className="bg-background text-foreground px-7 py-3 rounded-full group cursor-pointer">
-                  <a href="/shop" className="flex gap-3 items-center justify-center">
+                <button
+                  type="button"
+                  className="bg-background text-foreground px-7 py-3 group cursor-pointer"
+                >
+                  <a
+                    href="/shop"
+                    className="flex gap-3 items-center justify-center"
+                  >
                     Shop Now{" "}
                     <FaArrowRight className="-rotate-45 group-hover:rotate-0 group-hover:translate-x-1 transition-all duration-300 ease-out" />
                   </a>
                 </button>
-                <button className="group cursor-pointer">
-                  <a href="/about" className="flex gap-3 items-center justify-center">
+                <button type="button" className="group cursor-pointer">
+                  <a
+                    href="/about"
+                    className="flex gap-3 items-center justify-center"
+                  >
                     Learn More{" "}
                     <FaArrowRight className="-rotate-45 group-hover:rotate-0 group-hover:translate-x-1 transition-all duration-300 ease-out" />
                   </a>

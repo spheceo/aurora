@@ -1,15 +1,15 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import gsap from "gsap";
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { useCartStore } from "@/lib/zustand/useCartStore";
+import type { z } from "zod";
+import Cart from "@/components/cart";
 import { toast } from "@/components/ui/custom-toast";
 import { api } from "@/lib/orpc";
-import { z } from "zod";
-import { ProductsResponseSchema } from "@/lib/products";
-import gsap from "gsap";
-import Cart from "@/components/cart";
+import type { ProductsResponseSchema } from "@/lib/products";
+import { useCartStore } from "@/lib/zustand/useCartStore";
 
 type Product = z.infer<typeof ProductsResponseSchema>[number];
 type ProductClientProps = {
@@ -17,7 +17,10 @@ type ProductClientProps = {
   recommendedProducts: Product[];
 };
 
-export default function ProductClient({ product, recommendedProducts }: ProductClientProps) {
+export default function ProductClient({
+  product,
+  recommendedProducts,
+}: ProductClientProps) {
   const { addItem } = useCartStore();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -35,9 +38,13 @@ export default function ProductClient({ product, recommendedProducts }: ProductC
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
-        setSelectedImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
+        setSelectedImageIndex((prev) =>
+          prev > 0 ? prev - 1 : images.length - 1,
+        );
       } else if (e.key === "ArrowRight") {
-        setSelectedImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+        setSelectedImageIndex((prev) =>
+          prev < images.length - 1 ? prev + 1 : 0,
+        );
       }
     };
 
@@ -52,7 +59,7 @@ export default function ProductClient({ product, recommendedProducts }: ProductC
         gsap.fromTo(
           mainImageRef.current,
           { opacity: 0, scale: 0.95 },
-          { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
+          { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" },
         );
       }
 
@@ -67,7 +74,7 @@ export default function ProductClient({ product, recommendedProducts }: ProductC
             duration: 0.6,
             stagger: 0.1,
             ease: "power3.out",
-          }
+          },
         );
       }
 
@@ -82,7 +89,7 @@ export default function ProductClient({ product, recommendedProducts }: ProductC
             duration: 0.4,
             stagger: 0.05,
             ease: "power2.out",
-          }
+          },
         );
       }
     }
@@ -94,7 +101,7 @@ export default function ProductClient({ product, recommendedProducts }: ProductC
       for (let i = 0; i < quantity; i++) {
         addItem(product);
       }
-      toast(`Added ${quantity} item${quantity > 1 ? 's' : ''} to cart`);
+      toast(`Added ${quantity} item${quantity > 1 ? "s" : ""} to cart`);
       setQuantity(1); // Reset quantity after adding
     }
   };
@@ -108,17 +115,14 @@ export default function ProductClient({ product, recommendedProducts }: ProductC
         },
       ];
 
-      toast.promise(
-        api.checkout({ lineItems }),
-        {
-          loading: "Creating checkout...",
-          success: (data) => {
-            window.location.href = data.checkoutUrl;
-            return "Redirecting to checkout...";
-          },
-          error: "Failed to create checkout",
-        }
-      );
+      toast.promise(api.checkout({ lineItems }), {
+        loading: "Creating checkout...",
+        success: (data) => {
+          window.location.href = data.checkoutUrl;
+          return "Redirecting to checkout...";
+        },
+        error: "Failed to create checkout",
+      });
     }
   };
 
@@ -153,14 +157,26 @@ export default function ProductClient({ product, recommendedProducts }: ProductC
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
         <div className="flex items-center justify-between px-4 md:px-15 py-3 md:py-4">
           <Link href="/" className="inline-flex items-center cursor-pointer">
-            <Image src="/logo.png" alt="Aurora logo" width={34} height={34} />
+            <Image
+              src="/logo.png"
+              alt="Aurora logo"
+              width={34}
+              height={34}
+              className="rounded-lg"
+            />
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/about" className="group cursor-pointer hidden sm:block">
+            <Link
+              href="/about"
+              className="group cursor-pointer hidden sm:block"
+            >
               <span className="text-xs">About</span>
               <div className="bg-foreground h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
             </Link>
-            <Link href="/contact" className="group cursor-pointer hidden sm:block">
+            <Link
+              href="/contact"
+              className="group cursor-pointer hidden sm:block"
+            >
               <span className="text-xs">Contact</span>
               <div className="bg-foreground h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
             </Link>
@@ -173,11 +189,17 @@ export default function ProductClient({ product, recommendedProducts }: ProductC
       {/* Breadcrumb */}
       <div className="px-4 md:px-15 pt-4 md:pt-6 pb-3 md:pb-4">
         <div className="flex items-center gap-2 text-xs text-[#9A9A9A]">
-          <Link href="/" className="hover:text-foreground transition-colors cursor-pointer">
+          <Link
+            href="/"
+            className="hover:text-foreground transition-colors cursor-pointer"
+          >
             Home
           </Link>
           <span>/</span>
-          <Link href="/shop" className="hover:text-foreground transition-colors cursor-pointer">
+          <Link
+            href="/shop"
+            className="hover:text-foreground transition-colors cursor-pointer"
+          >
             Shop
           </Link>
           <span>/</span>
@@ -283,7 +305,9 @@ export default function ProductClient({ product, recommendedProducts }: ProductC
                   >
                     <FaArrowLeft className="w-3 h-3" />
                   </button>
-                  <span className="text-lg font-medium w-12 text-center">{quantity}</span>
+                  <span className="text-lg font-medium w-12 text-center">
+                    {quantity}
+                  </span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
                     className="w-10 h-10 border border-border flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer text-foreground"
@@ -332,7 +356,9 @@ export default function ProductClient({ product, recommendedProducts }: ProductC
                 <p className="text-[10px] font-medium text-[#9A9A9A] tracking-widest uppercase mb-3">
                   [You May Also Like]
                 </p>
-                <h2 className="text-2xl md:text-3xl font-medium">Recommended Products</h2>
+                <h2 className="text-2xl md:text-3xl font-medium">
+                  Recommended Products
+                </h2>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
@@ -346,9 +372,7 @@ export default function ProductClient({ product, recommendedProducts }: ProductC
                       {recProduct.assets[0]?.url ? (
                         <Image
                           src={recProduct.assets[0].url}
-                          alt={
-                            recProduct.assets[0].altText || recProduct.title
-                          }
+                          alt={recProduct.assets[0].altText || recProduct.title}
                           fill
                           className={`object-cover transition-opacity duration-300 ${
                             recProduct.soldOut

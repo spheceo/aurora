@@ -20,7 +20,9 @@ export default function Footer() {
 
           {/* Shop Column */}
           <div className="space-y-4">
-            <h3 className="text-xs font-medium uppercase tracking-wider">Shop</h3>
+            <h3 className="text-xs font-medium uppercase tracking-wider">
+              Shop
+            </h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -43,7 +45,9 @@ export default function Footer() {
 
           {/* Company Column */}
           <div className="space-y-4">
-            <h3 className="text-xs font-medium uppercase tracking-wider">Company</h3>
+            <h3 className="text-xs font-medium uppercase tracking-wider">
+              Company
+            </h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -66,26 +70,30 @@ export default function Footer() {
 
           {/* Connect Column */}
           <div className="space-y-4">
-            <h3 className="text-xs font-medium uppercase tracking-wider">Connect</h3>
+            <h3 className="text-xs font-medium uppercase tracking-wider">
+              Connect
+            </h3>
             <ul className="space-y-2">
-              {/* <li>
+              <li>
                 <a
-                  href="https://www.instagram.com/aurora_crystalss/"
+                  href="https://www.instagram.com/aurora_za_"
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sm text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer"
                 >
                   Instagram
                 </a>
-              </li> */}
-              {/* <li>
+              </li>
+              <li>
                 <a
-                  href="https://www.tiktok.com/@aurora_crystalss"
+                  href="https://www.tiktok.com/@aurora_za_"
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sm text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer"
                 >
                   TikTok
                 </a>
-              </li> */}
+              </li>
             </ul>
           </div>
         </div>

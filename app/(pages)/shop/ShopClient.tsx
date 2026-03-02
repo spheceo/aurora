@@ -1,24 +1,24 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useCartStore } from "@/lib/zustand/useCartStore";
+import gsap from "gsap";
 import Image from "next/image";
 import Link from "next/link";
-import { z } from "zod";
-import { ProductsResponseSchema } from "@/lib/products";
-import { CollectionsResponseSchema } from "@/lib/collections";
-import { LuSearch, LuChevronDown, LuArrowUpDown, LuX } from "react-icons/lu";
-import { FiShoppingCart } from "react-icons/fi";
-import { FaArrowRight } from "react-icons/fa";
-import { toast } from "@/components/ui/custom-toast";
 import { parseAsString, useQueryState } from "nuqs";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
+import { FiShoppingCart } from "react-icons/fi";
+import { LuArrowUpDown, LuChevronDown, LuSearch, LuX } from "react-icons/lu";
+import type { z } from "zod";
+import Cart from "@/components/cart";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/custom-dropdown";
-import gsap from "gsap";
-import Cart from "@/components/cart";
+import { toast } from "@/components/ui/custom-toast";
+import type { CollectionsResponseSchema } from "@/lib/collections";
+import type { ProductsResponseSchema } from "@/lib/products";
+import { useCartStore } from "@/lib/zustand/useCartStore";
 
 type Product = z.infer<typeof ProductsResponseSchema>[number];
 type Collection = z.infer<typeof CollectionsResponseSchema>[number];
@@ -28,7 +28,12 @@ type ShopClientProps = {
 };
 
 type PriceRange = "all" | "0-150" | "150-300" | "300-500";
-type SortOption = "default" | "price-asc" | "price-desc" | "name-asc" | "name-desc";
+type SortOption =
+  | "default"
+  | "price-asc"
+  | "price-desc"
+  | "name-asc"
+  | "name-desc";
 
 const priceRanges: { value: PriceRange; label: string }[] = [
   { value: "all", label: "All Prices" },
@@ -50,20 +55,45 @@ const getNumericPrice = (priceStr: string): number => {
   return match ? parseFloat(match[0]) : 0;
 };
 
-export default function ShopClient({ initialProducts, initialCollections }: ShopClientProps) {
+export default function ShopClient({
+  initialProducts,
+  initialCollections,
+}: ShopClientProps) {
   const { addItem } = useCartStore();
   const [products] = useState<Product[]>(initialProducts);
   const [collections] = useState<Collection[]>(initialCollections);
-  const [searchQuery, setSearchQuery] = useQueryState("q", parseAsString.withDefault(""));
-  const [priceRangeParam, setPriceRangeParam] = useQueryState("price", parseAsString.withDefault(""));
-  const [sortParam, setSortParam] = useQueryState("sort", parseAsString.withDefault(""));
-  const [collectionParam, setCollectionParam] = useQueryState("collection", parseAsString.withDefault(""));
+  const [searchQuery, setSearchQuery] = useQueryState(
+    "q",
+    parseAsString.withDefault(""),
+  );
+  const [priceRangeParam, setPriceRangeParam] = useQueryState(
+    "price",
+    parseAsString.withDefault(""),
+  );
+  const [sortParam, setSortParam] = useQueryState(
+    "sort",
+    parseAsString.withDefault(""),
+  );
+  const [collectionParam, setCollectionParam] = useQueryState(
+    "collection",
+    parseAsString.withDefault(""),
+  );
   const gridRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
 
   // Derive price range and sort from params or default
-  const priceRange: PriceRange = (["all", "0-150", "150-300", "300-500"].includes(priceRangeParam) ? priceRangeParam : "all") as PriceRange;
-  const sortBy: SortOption = (["default", "price-asc", "price-desc", "name-asc", "name-desc"].includes(sortParam) ? sortParam : "default") as SortOption;
+  const priceRange: PriceRange = (
+    ["all", "0-150", "150-300", "300-500"].includes(priceRangeParam)
+      ? priceRangeParam
+      : "all"
+  ) as PriceRange;
+  const sortBy: SortOption = (
+    ["default", "price-asc", "price-desc", "name-asc", "name-desc"].includes(
+      sortParam,
+    )
+      ? sortParam
+      : "default"
+  ) as SortOption;
 
   const setPriceRange = (value: PriceRange) => {
     setPriceRangeParam(value === "all" ? null : value);
@@ -75,7 +105,10 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
 
   const selectedCollection = useMemo(() => {
     if (!collectionParam) return null;
-    return collections.find((collection) => collection.handle === collectionParam) || null;
+    return (
+      collections.find((collection) => collection.handle === collectionParam) ||
+      null
+    );
   }, [collectionParam, collections]);
 
   // Filter and sort products
@@ -96,15 +129,17 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
         // Collection filter
         if (collectionParam) {
           const inCollection = product.collections?.some(
-            (collection) => collection.handle === collectionParam
+            (collection) => collection.handle === collectionParam,
           );
           if (!inCollection) return false;
         }
         // Price filter
         if (priceRange !== "all") {
           const price = getNumericPrice(product.price);
-          if (priceRange === "0-150" && (price < 0 || price > 150)) return false;
-          if (priceRange === "150-300" && (price <= 150 || price > 300)) return false;
+          if (priceRange === "0-150" && (price < 0 || price > 150))
+            return false;
+          if (priceRange === "150-300" && (price <= 150 || price > 300))
+            return false;
           if (priceRange === "300-500" && price <= 300) return false;
         }
         return true;
@@ -137,7 +172,7 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
           duration: 0.8,
           stagger: 0.15,
           ease: "power3.out",
-        }
+        },
       );
     }
   }, []);
@@ -161,7 +196,7 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
           duration: isInitialLoad ? 0.6 : 0.4,
           stagger: isInitialLoad ? 0.08 : 0.05,
           ease: isInitialLoad ? "power3.out" : "power2.out",
-        }
+        },
       );
 
       prevLengthRef.current = cards.length;
@@ -175,7 +210,11 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
     setCollectionParam(null);
   };
 
-  const hasActiveFilters = searchQuery || priceRange !== "all" || sortBy !== "default" || collectionParam;
+  const hasActiveFilters =
+    searchQuery ||
+    priceRange !== "all" ||
+    sortBy !== "default" ||
+    collectionParam;
 
   return (
     <div className="min-h-dvh bg-background">
@@ -183,14 +222,26 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
         <div className="flex items-center justify-between px-4 md:px-15 py-3 md:py-4">
           <Link href="/" className="inline-flex items-center cursor-pointer">
-            <Image src="/logo.png" alt="Aurora logo" width={34} height={34} />
+            <Image
+              src="/logo.png"
+              alt="Aurora logo"
+              width={34}
+              height={34}
+              className="rounded-lg"
+            />
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/about" className="group cursor-pointer hidden sm:block">
+            <Link
+              href="/about"
+              className="group cursor-pointer hidden sm:block"
+            >
               <span className="text-xs">About</span>
               <div className="bg-foreground h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
             </Link>
-            <Link href="/contact" className="group cursor-pointer hidden sm:block">
+            <Link
+              href="/contact"
+              className="group cursor-pointer hidden sm:block"
+            >
               <span className="text-xs">Contact</span>
               <div className="bg-foreground h-px transition-all origin-left scale-x-0 group-hover:scale-x-100" />
             </Link>
@@ -258,7 +309,10 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
                     <LuChevronDown className="w-3 h-3 text-[#9A9A9A]" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="bg-background border-border rounded-none min-w-[220px]">
+                <DropdownMenuContent
+                  align="start"
+                  className="bg-background border-border rounded-none min-w-[220px]"
+                >
                   <DropdownMenuItem
                     onClick={() => setCollectionParam(null)}
                     className={`text-foreground hover:bg-secondary cursor-pointer rounded-none ${!collectionParam ? "bg-secondary" : ""}`}
@@ -281,11 +335,16 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="px-4 py-2 border border-border flex items-center gap-2 hover:bg-secondary transition-colors text-xs cursor-pointer">
-                    <span>{priceRanges.find((r) => r.value === priceRange)?.label}</span>
+                    <span>
+                      {priceRanges.find((r) => r.value === priceRange)?.label}
+                    </span>
                     <LuChevronDown className="w-3 h-3 text-[#9A9A9A]" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="bg-background border-border rounded-none min-w-[200px]">
+                <DropdownMenuContent
+                  align="start"
+                  className="bg-background border-border rounded-none min-w-[200px]"
+                >
                   {priceRanges.map((range) => (
                     <DropdownMenuItem
                       key={range.value}
@@ -303,11 +362,16 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
                 <DropdownMenuTrigger asChild>
                   <button className="px-4 py-2 border border-border flex items-center gap-2 hover:bg-secondary transition-colors text-xs cursor-pointer">
                     <LuArrowUpDown className="w-3 h-3" />
-                    <span>{sortOptions.find((s) => s.value === sortBy)?.label}</span>
+                    <span>
+                      {sortOptions.find((s) => s.value === sortBy)?.label}
+                    </span>
                     <LuChevronDown className="w-3 h-3 text-[#9A9A9A]" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="bg-background border-border rounded-none min-w-[200px]">
+                <DropdownMenuContent
+                  align="start"
+                  className="bg-background border-border rounded-none min-w-[200px]"
+                >
                   {sortOptions.map((option) => (
                     <DropdownMenuItem
                       key={option.value}
@@ -333,7 +397,8 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
 
               {/* Results Count */}
               <span className="text-xs text-[#9A9A9A] ml-auto">
-                {filteredProducts.length} {filteredProducts.length === 1 ? "item" : "items"}
+                {filteredProducts.length}{" "}
+                {filteredProducts.length === 1 ? "item" : "items"}
               </span>
             </div>
           </div>
@@ -375,7 +440,9 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
                       alt={product.assets[0].altText || product.title}
                       fill
                       className={`object-cover transition-opacity duration-300 ${
-                        product.soldOut ? "opacity-30" : "group-hover:opacity-90"
+                        product.soldOut
+                          ? "opacity-30"
+                          : "group-hover:opacity-90"
                       }`}
                     />
                   ) : (
@@ -400,8 +467,12 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
                     <h3 className="text-sm font-medium leading-tight truncate">
                       {product.title}
                     </h3>
-                    <p className={`text-sm font-medium whitespace-nowrap ${product.soldOut ? "text-[#9A9A9A]" : ""}`}>
-                      {product.soldOut ? "—" : product.price.replace(" ZAR", "")}
+                    <p
+                      className={`text-sm font-medium whitespace-nowrap ${product.soldOut ? "text-[#9A9A9A]" : ""}`}
+                    >
+                      {product.soldOut
+                        ? "—"
+                        : product.price.replace(" ZAR", "")}
                     </p>
                   </div>
 
@@ -430,7 +501,9 @@ export default function ShopClient({ initialProducts, initialCollections }: Shop
       <div className="px-4 md:px-15 py-12 md:py-16 border-t border-border">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
           <div className="text-center lg:text-left">
-            <h2 className="text-xl md:text-2xl font-medium mb-2">Can't find what you're looking for?</h2>
+            <h2 className="text-xl md:text-2xl font-medium mb-2">
+              Can't find what you're looking for?
+            </h2>
             <p className="text-[#9A9A9A] text-sm">
               Contact us for custom orders or special requests.
             </p>

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { getProducts } from "@/lib/products";
 
 export default async function SignaturePicks() {
@@ -8,11 +8,14 @@ export default async function SignaturePicks() {
 
   // Filter: has images, not sold out
   const availableProducts = allProducts.filter(
-    (product) => product.assets.length > 0 && !product.soldOut
+    (product) => product.assets.length > 0 && !product.soldOut,
   );
 
   // Get 4 random products
-  const getRandomProducts = (products: typeof availableProducts, count: number) => {
+  const getRandomProducts = (
+    products: typeof availableProducts,
+    count: number,
+  ) => {
     const shuffled = [...products].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, Math.min(count, shuffled.length));
   };
@@ -25,18 +28,22 @@ export default async function SignaturePicks() {
   };
 
   return (
-    <div id="signature-picks" className="bg-white py-12 md:py-16 px-4 md:px-15 relative z-20">
+    <div
+      id="signature-picks"
+      className="bg-white py-12 md:py-16 px-4 md:px-15 relative z-20"
+    >
       <div className="space-y-12">
         {/* Header */}
-        <div className="text-center space-y-4">
+        <div className="space-y-4">
           <p className="text-[10px] font-medium text-[#9A9A9A] tracking-widest uppercase">
             [Signature Picks]
           </p>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium">
             Our Signature Crystal Picks
           </h2>
-          <p className="text-base md:text-lg text-[#9A9A9A] max-w-2xl mx-auto">
-            Each piece defined by natural beauty, vibrant energy, and timeless elegance
+          <p className="text-base md:text-lg text-[#9A9A9A] w-full max-w-[42rem]">
+            Each piece defined by natural beauty, vibrant energy, and timeless
+            elegance
           </p>
         </div>
 
@@ -68,7 +75,9 @@ export default async function SignaturePicks() {
                 <h3 className="font-medium leading-tight group-hover:opacity-80 transition-opacity">
                   {product.title}
                 </h3>
-                <p className="text-sm font-medium">{formatPrice(product.price)}</p>
+                <p className="text-sm font-medium">
+                  {formatPrice(product.price)}
+                </p>
               </div>
             </Link>
           ))}
