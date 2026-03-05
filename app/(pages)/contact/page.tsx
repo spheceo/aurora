@@ -9,10 +9,10 @@ export default function ContactPage() {
         <div className="flex items-center justify-between px-4 py-3 md:px-15 md:py-4">
           <Link href="/" className="inline-flex items-center">
             <Image
-              src="/logo.png"
+              src="/aurora-logo.png"
               alt="Aurora logo"
-              width={34}
-              height={34}
+              width={40}
+              height={40}
               className="rounded-lg"
             />
           </Link>

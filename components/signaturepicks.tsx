@@ -35,16 +35,9 @@ export default async function SignaturePicks() {
       <div className="space-y-12">
         {/* Header */}
         <div className="space-y-4">
-          <p className="text-[10px] font-medium text-[#9A9A9A] tracking-widest uppercase">
-            [Signature Picks]
-          </p>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium">
-            Our Signature Crystal Picks
+            Our Signature Picks
           </h2>
-          <p className="text-base md:text-lg text-[#9A9A9A] w-full max-w-[42rem]">
-            Each piece defined by natural beauty, vibrant energy, and timeless
-            elegance
-          </p>
         </div>
 
         {/* Product Grid */}

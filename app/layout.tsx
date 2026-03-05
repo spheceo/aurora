@@ -49,15 +49,9 @@ export const metadata: Metadata = {
     images: [siteConfig.ogImage],
   },
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
-      { url: "/icon-16.png", type: "image/png", sizes: "16x16" },
-      { url: "/icon.png", type: "image/png", sizes: "512x512" },
-      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
-    ],
-    shortcut: [{ url: "/favicon.ico" }],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    icon: [{ url: "/aurora-logo.png", type: "image/png", sizes: "520x520" }],
+    shortcut: [{ url: "/aurora-logo.png" }],
+    apple: [{ url: "/aurora-logo.png", sizes: "520x520" }],
   },
 };
 

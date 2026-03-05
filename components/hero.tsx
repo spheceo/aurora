@@ -122,10 +122,10 @@ export default forwardRef(function Hero(
           {/*Navbar - Mobile*/}
           <div className="flex md:hidden items-center justify-between w-full h-16">
             <Image
-              src="/logo.png"
+              src="/aurora-logo.png"
               alt="Aurora Logo"
-              width={40}
-              height={40}
+              width={46}
+              height={46}
               className="rounded-lg"
             />
             <div className="flex items-center gap-4">
@@ -139,10 +139,10 @@ export default forwardRef(function Hero(
           <div className="hidden md:flex items-center justify-between w-full h-18">
             <div className="w-full">
               <Image
-                src="/logo.png"
+                src="/aurora-logo.png"
                 alt="Aurora Logo"
-                width={50}
-                height={50}
+                width={56}
+                height={56}
                 className="rounded-lg"
               />
             </div>
@@ -169,46 +169,39 @@ export default forwardRef(function Hero(
           </div>
 
           {/*Rest of the Hero*/}
-          <div className="w-full flex flex-col md:flex-row justify-between items-center md:items-end gap-6 md:gap-0">
+          <div className="w-full flex flex-col md:flex-row justify-between items-center md:items-center gap-6 md:gap-10">
             <div className="space-y-3 w-full md:w-auto">
-              <p className="font-medium text-sm md:text-base">[Crystals]</p>
               <h1 className="w-full md:w-170 text-4xl sm:text-5xl md:text-7xl font-medium">
-                Earth's Beauty, Captured in Crystal.
+                Earth's Beauties.
               </h1>
               <div className="flex items-center gap-3 text-[#C4C4C4] mt-4 text-sm md:text-base">
                 <LuMouse />
                 Scroll for more info.
               </div>
             </div>
-            <div className="w-full md:w-87.5 flex flex-col gap-4">
-              <p className="text-sm md:text-base">
-                Each crystal is formed over centuries, carrying the raw beauty
-                of the earth and selected for its clarity, color, and presence.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
-                <button
-                  type="button"
-                  className="bg-background text-foreground px-7 py-3 group cursor-pointer"
+            <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
+              <button
+                type="button"
+                className="bg-background text-foreground px-7 py-3 group cursor-pointer"
+              >
+                <a
+                  href="/shop"
+                  className="flex gap-3 items-center justify-center"
                 >
-                  <a
-                    href="/shop"
-                    className="flex gap-3 items-center justify-center"
-                  >
-                    Shop Now{" "}
-                    <FaArrowRight className="-rotate-45 group-hover:rotate-0 group-hover:translate-x-1 transition-all duration-300 ease-out" />
-                  </a>
-                </button>
-                <button type="button" className="group cursor-pointer">
-                  <a
-                    href="/about"
-                    className="flex gap-3 items-center justify-center"
-                  >
-                    Learn More{" "}
-                    <FaArrowRight className="-rotate-45 group-hover:rotate-0 group-hover:translate-x-1 transition-all duration-300 ease-out" />
-                  </a>
-                  <div className="bg-white h-[1.5px] mt-1" />
-                </button>
-              </div>
+                  Shop Now{" "}
+                  <FaArrowRight className="-rotate-45 group-hover:rotate-0 group-hover:translate-x-1 transition-all duration-300 ease-out" />
+                </a>
+              </button>
+              <button type="button" className="group cursor-pointer">
+                <a
+                  href="/about"
+                  className="flex gap-3 items-center justify-center"
+                >
+                  Learn More{" "}
+                  <FaArrowRight className="-rotate-45 group-hover:rotate-0 group-hover:translate-x-1 transition-all duration-300 ease-out" />
+                </a>
+                <div className="bg-white h-[1.5px] mt-1" />
+              </button>
             </div>
           </div>
         </div>

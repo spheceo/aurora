@@ -2,25 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Cart from "@/components/cart";
 
-const values = [
-  {
-    title: "Authenticity",
-    copy: "Every crystal we offer is natural and selected for genuine beauty.",
-  },
-  {
-    title: "Quality",
-    copy: "Each piece is checked for clarity, color, and overall finish.",
-  },
-  {
-    title: "Sustainability",
-    copy: "We work with partners who prioritize responsible sourcing practices.",
-  },
-  {
-    title: "Connection",
-    copy: "We help you find crystals that suit your space, intention, and style.",
-  },
-];
-
 export default function AboutPage() {
   return (
     <div className="min-h-dvh bg-background">
@@ -28,10 +9,10 @@ export default function AboutPage() {
         <div className="flex items-center justify-between px-4 py-3 md:px-15 md:py-4">
           <Link href="/" className="inline-flex items-center">
             <Image
-              src="/logo.png"
+              src="/aurora-logo.png"
               alt="Aurora logo"
-              width={34}
-              height={34}
+              width={40}
+              height={40}
               className="rounded-lg"
             />
           </Link>
@@ -58,28 +39,49 @@ export default function AboutPage() {
               About us
             </p>
             <h1 className="mt-3 text-2xl leading-tight md:text-4xl">
-              Bringing Nature&apos;s
-              <br />
-              Beauty to You
+              Find Your Obsession
             </h1>
-            <p className="mt-5 text-sm leading-relaxed text-[#65595a]">
-              Aurora connects people with thoughtfully curated natural crystals.
-              Every piece in our collection is selected for visual character,
-              quality, and the atmosphere it brings into a space.
-            </p>
-
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              {values.map((value) => (
-                <article
-                  key={value.title}
-                  className="border border-[#ece6e7] bg-[#faf8f8] p-3"
-                >
-                  <h2 className="text-sm font-medium">{value.title}</h2>
-                  <p className="mt-2 text-xs leading-relaxed text-[#6f6162]">
-                    {value.copy}
-                  </p>
-                </article>
-              ))}
+            <div className="mt-5 space-y-4 text-sm leading-relaxed text-[#65595a]">
+              <p>
+                At Aurora, we believe in the refined power of energy,
+                intention, and elevated living. Our collection extends beyond
+                natural crystals to include a curated selection of energy tools
+                designed to uplift your frequency and support intentional
+                wellness practices.
+              </p>
+              <p>
+                Each piece is thoughtfully selected for its rarity, quality,
+                and energetic presence. From statement crystals to
+                transformative tools, every item is chosen to enhance your
+                space, encourage balance, and promote clarity of mind and calm
+                within your environment.
+              </p>
+              <p>
+                We view wellness as a lifestyle, one rooted in alignment,
+                awareness, and refinement. Aurora is not about trends. It is
+                about intentional luxury, conscious living, and surrounding
+                yourself with pieces that support both inner wellbeing and outer
+                beauty.
+              </p>
+              <p>
+                Our mission at Aurora is to curate refined crystals and
+                intentional energy tools that elevate both space and self. We
+                are dedicated to offering rare, high-quality pieces that support
+                balance, clarity, and conscious living.
+              </p>
+              <p>
+                We believe true wellness begins with intention. Through
+                carefully selected products designed to uplift your energy and
+                enhance your frequency, we aim to help you create environments
+                that inspire calm, confidence, and alignment.
+              </p>
+              <p>
+                Aurora exists to make elevated living accessible to those who
+                value rarity, craftsmanship, and meaningful transformation.
+                Every piece we offer is chosen with purpose, so you can live
+                with intention and surround yourself with energy that reflects
+                your highest standard.
+              </p>
             </div>
 
             <Link

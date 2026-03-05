@@ -123,9 +123,6 @@ export default function Reviews() {
       <div className="space-y-8">
         {/* Reviews Header */}
         <div>
-          <p className="text-[10px] font-medium text-[#8a7678] tracking-widest uppercase mb-3">
-            [Customer Reviews]
-          </p>
           <div className="flex items-center gap-6 flex-wrap">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium">
               What Our Customers Say
@@ -148,10 +145,6 @@ export default function Reviews() {
               </span>
             </div>
           </div>
-          <p className="text-sm md:text-base text-[#9A9A9A] mt-3 w-full max-w-[42rem]">
-            Real feedback from customers who have styled their spaces with
-            Aurora crystals.
-          </p>
         </div>
 
         {/* Reviews Grid */}

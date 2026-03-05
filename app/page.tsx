@@ -40,7 +40,7 @@ export default async function Home() {
     "@type": "OnlineStore",
     name: siteConfig.legalName,
     url: siteConfig.url,
-    logo: `${siteConfig.url}/logo.png`,
+    logo: `${siteConfig.url}/aurora-logo.png`,
     // sameAs: [siteConfig.social.instagram, siteConfig.social.tiktok],
   };
 

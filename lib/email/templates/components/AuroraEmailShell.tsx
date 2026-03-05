@@ -38,7 +38,7 @@ export function AuroraEmailShell({
   ctaLabel,
   children,
 }: AuroraEmailShellProps) {
-  const logoUrl = joinUrl(appUrl, "/logo.png");
+  const logoUrl = joinUrl(appUrl, "/aurora-logo.png");
 
   return (
     <Html>
