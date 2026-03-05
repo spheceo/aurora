@@ -179,7 +179,7 @@ We aim to respond within 24–48 business hours.`,
     >
       <div className="space-y-8">
         {/* Header */}
-        <div className="text-right">
+        <div className="w-full text-left">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium">
             Questions? We've Got Answers
           </h2>

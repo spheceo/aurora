@@ -43,7 +43,7 @@ export default function HeroCarousel({
   }
 
   return (
-    <section className="w-full py-8 md:py-12 lg:py-16 mt-6 md:mt-10 mb-12 md:mb-20 overflow-hidden">
+    <section className="w-full pt-0 pb-6 md:pb-10 overflow-hidden">
       <Carousel
         opts={{
           align: "start",
@@ -52,7 +52,7 @@ export default function HeroCarousel({
         className="w-full"
       >
         {/* Slides */}
-        <CarouselContent className="-ml-4 pl-4 md:pl-8 lg:pl-[120px]">
+        <CarouselContent className="-ml-4 pl-4 md:pl-15">
           {collections.map((collection) => (
             <CarouselItem
               key={collection.id}
@@ -156,7 +156,7 @@ export default function HeroCarousel({
         </CarouselContent>
 
         {/* Bottom controls */}
-        <div className="mt-8 flex items-center gap-4 pl-4 md:pl-8 lg:pl-[120px]">
+        <div className="mt-8 flex items-center gap-4 pl-4 md:pl-15">
           <CarouselPrevious className="static translate-y-0 rounded-none cursor-pointer" />
           <CarouselNext className="static translate-y-0 rounded-none cursor-pointer" />
         </div>
