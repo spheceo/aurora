@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { formatProductPrice } from "@/lib/currency";
 import { getProducts } from "@/lib/products";
 
 export default async function SignaturePicks() {
@@ -21,11 +22,6 @@ export default async function SignaturePicks() {
   };
 
   const signatureProducts = getRandomProducts(availableProducts, 4);
-
-  // Format price
-  const formatPrice = (price: string) => {
-    return price.replace(/[A-Z]{3}\s/, "").trim();
-  };
 
   return (
     <div
@@ -69,7 +65,7 @@ export default async function SignaturePicks() {
                   {product.title}
                 </h3>
                 <p className="text-sm font-medium">
-                  {formatPrice(product.price)}
+                  {formatProductPrice(product.price)}
                 </p>
               </div>
             </Link>

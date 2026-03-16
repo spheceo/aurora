@@ -11,6 +11,7 @@ import { useCartStore } from "@/lib/zustand/useCartStore";
 import { toast } from "@/components/ui/custom-toast";
 import Image from "next/image";
 import Link from "next/link";
+import { currency, formatProductPrice } from "@/lib/currency";
 import { FiShoppingCart } from "react-icons/fi";
 
 type Product = z.infer<typeof ProductsResponseSchema>[number];
@@ -19,9 +20,9 @@ type PriceRange = "all" | "0-150" | "150-300" | "300-500";
 
 const priceRanges: { value: PriceRange; label: string }[] = [
   { value: "all", label: "All Prices" },
-  { value: "0-150", label: "R0 - R150" },
-  { value: "150-300", label: "R150 - R300" },
-  { value: "300-500", label: "R300 - R500+" },
+  { value: "0-150", label: `${currency}0 - ${currency}150` },
+  { value: "150-300", label: `${currency}150 - ${currency}300` },
+  { value: "300-500", label: `${currency}300+` },
 ];
 
 // Helper to extract numeric price from string like "450.00 ZAR"
@@ -217,7 +218,7 @@ export default function Search() {
                           {product.title}
                         </h3>
                         <p className={`text-xs font-medium whitespace-nowrap ${product.soldOut ? "text-[#9A9A9A]" : "text-foreground"}`}>
-                          {product.soldOut ? "—" : product.price.replace(" ZAR", "")}
+                          {product.soldOut ? "—" : formatProductPrice(product.price)}
                         </p>
                       </div>
                       {!product.soldOut && (

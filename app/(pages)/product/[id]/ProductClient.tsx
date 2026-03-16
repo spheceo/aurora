@@ -7,6 +7,7 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import type { z } from "zod";
 import Cart from "@/components/cart";
 import { toast } from "@/components/ui/custom-toast";
+import { formatProductPrice } from "@/lib/currency";
 import { api } from "@/lib/orpc";
 import type { ProductsResponseSchema } from "@/lib/products";
 import { useCartStore } from "@/lib/zustand/useCartStore";
@@ -146,11 +147,6 @@ export default function ProductClient({
   const images = product.assets.filter((a) => a.url);
   const hasMultipleImages = images.length > 1;
 
-  // Format price to show only the currency symbol and amount
-  const formatPrice = (price: string) => {
-    return price.replace(" ZAR", "").trim();
-  };
-
   return (
     <div className="min-h-dvh bg-background">
       {/* Navigation */}
@@ -283,7 +279,7 @@ export default function ProductClient({
                   product.soldOut ? "text-[#9A9A9A]" : ""
                 }`}
               >
-                {product.soldOut ? "—" : formatPrice(product.price)}
+                {product.soldOut ? "—" : formatProductPrice(product.price)}
               </p>
             </div>
 
@@ -407,7 +403,7 @@ export default function ProductClient({
                         >
                           {recProduct.soldOut
                             ? "—"
-                            : formatPrice(recProduct.price)}
+                            : formatProductPrice(recProduct.price)}
                         </p>
                       </div>
                     </div>

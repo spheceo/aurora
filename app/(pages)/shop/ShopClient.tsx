@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/custom-dropdown";
 import { toast } from "@/components/ui/custom-toast";
 import type { CollectionsResponseSchema } from "@/lib/collections";
+import { currency, formatProductPrice } from "@/lib/currency";
 import type { ProductsResponseSchema } from "@/lib/products";
 import { useCartStore } from "@/lib/zustand/useCartStore";
 
@@ -37,9 +38,9 @@ type SortOption =
 
 const priceRanges: { value: PriceRange; label: string }[] = [
   { value: "all", label: "All Prices" },
-  { value: "0-150", label: "R0 - R150" },
-  { value: "150-300", label: "R150 - R300" },
-  { value: "300-500", label: "R300+" },
+  { value: "0-150", label: `${currency}0 - ${currency}150` },
+  { value: "150-300", label: `${currency}150 - ${currency}300` },
+  { value: "300-500", label: `${currency}300+` },
 ];
 
 const sortOptions: { value: SortOption; label: string }[] = [
@@ -472,7 +473,7 @@ export default function ShopClient({
                     >
                       {product.soldOut
                         ? "—"
-                        : product.price.replace(" ZAR", "")}
+                        : formatProductPrice(product.price)}
                     </p>
                   </div>
 

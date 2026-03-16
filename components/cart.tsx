@@ -4,6 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/compon
 import { useCartStore } from "@/lib/zustand/useCartStore";
 import { api } from "@/lib/orpc";
 import { toast } from "@/components/ui/custom-toast";
+import { currency, formatProductPrice, getProductPriceAmount } from "@/lib/currency";
 import Image from "next/image";
 
 export default function Cart() {
@@ -40,7 +41,7 @@ export default function Cart() {
 
   // Calculate total price
   const total = items.reduce((sum, item) => {
-    const price = parseFloat(item.price.match(/[\d.]+/)?.[0] || "0");
+    const price = getProductPriceAmount(item.price);
     return sum + price * item.quantity;
   }, 0);
 
@@ -90,7 +91,7 @@ export default function Cart() {
                     <div className="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
                         <h4 className="font-medium text-[10px] md:text-xs truncate uppercase tracking-wide text-foreground">{item.title}</h4>
-                        <p className="text-[10px] md:text-xs text-[#9A9A9A] mt-0.5">{item.price}</p>
+                        <p className="text-[10px] md:text-xs text-[#9A9A9A] mt-0.5">{formatProductPrice(item.price)}</p>
                       </div>
 
                       {/* Quantity Controls */}
@@ -127,7 +128,7 @@ export default function Cart() {
             <div className="border-t border-border px-3 md:px-4 py-3 md:py-4">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs uppercase tracking-wider font-medium text-foreground">Total</span>
-                <span className="font-medium text-base text-foreground">R{total.toFixed(2)}</span>
+                <span className="font-medium text-base text-foreground">{currency}{total.toFixed(2)}</span>
               </div>
               <button
                 onClick={handleCheckout}
