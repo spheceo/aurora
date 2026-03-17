@@ -25,6 +25,7 @@ export default function ProductClient({
   const { addItem } = useCartStore();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
 
   const mainImageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -96,11 +97,34 @@ export default function ProductClient({
     }
   }, [product]);
 
+  useEffect(() => {
+    if (!product) return;
+    setSelectedVariantId(product.variantId);
+    setQuantity(1);
+  }, [product]);
+
+  const selectedVariant =
+    product?.variants.find((variant) => variant.id === selectedVariantId) ||
+    product?.variants[0];
+  const selectedVariantTitle =
+    selectedVariant?.title === "Default Title" ? undefined : selectedVariant?.title;
+  const hasMultipleVariants = (product?.variantCount || 0) > 1;
+  const activePrice = selectedVariant?.price || product?.price || "";
+  const activeSoldOut = selectedVariant?.soldOut ?? product?.soldOut ?? true;
+
   const handleAddToCart = () => {
-    if (product && !product.soldOut) {
+    if (product && selectedVariant && !activeSoldOut) {
+      const productForCart = {
+        ...product,
+        variantId: selectedVariant.id,
+        price: selectedVariant.price,
+        soldOut: selectedVariant.soldOut,
+        selectedVariantTitle,
+      };
+
       // Add the product multiple times based on quantity
       for (let i = 0; i < quantity; i++) {
-        addItem(product);
+        addItem(productForCart);
       }
       toast(`Added ${quantity} item${quantity > 1 ? "s" : ""} to cart`);
       setQuantity(1); // Reset quantity after adding
@@ -108,10 +132,10 @@ export default function ProductClient({
   };
 
   const handleCheckout = () => {
-    if (product && !product.soldOut) {
+    if (product && selectedVariant && !activeSoldOut) {
       const lineItems = [
         {
-          variantId: product.variantId,
+          variantId: selectedVariant.id,
           quantity: quantity,
         },
       ];
@@ -276,11 +300,16 @@ export default function ProductClient({
               </h1>
               <p
                 className={`text-xl md:text-2xl font-medium ${
-                  product.soldOut ? "text-[#9A9A9A]" : ""
+                  activeSoldOut ? "text-[#9A9A9A]" : ""
                 }`}
               >
-                {product.soldOut ? "—" : formatProductPrice(product.price)}
+                {activeSoldOut ? "—" : formatProductPrice(activePrice)}
               </p>
+              {hasMultipleVariants ? (
+                <p className="text-sm text-[#9A9A9A]">
+                  Multiple pack options available. Select a pack below to see the exact price.
+                </p>
+              ) : null}
             </div>
 
             <div className="space-y-4 animate-content">
@@ -290,8 +319,50 @@ export default function ProductClient({
               </div>
             </div>
 
+            {hasMultipleVariants ? (
+              <div className="animate-content space-y-4">
+                <h2 className="text-sm font-medium">Pack Options</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {product.variants.map((variant) => {
+                    const isSelected = variant.id === selectedVariant?.id;
+                    const label =
+                      variant.title === "Default Title" ? "Standard" : variant.title;
+
+                    return (
+                      <button
+                        key={variant.id}
+                        type="button"
+                        onClick={() => setSelectedVariantId(variant.id)}
+                        className={`border p-4 text-left transition-colors cursor-pointer ${
+                          isSelected
+                            ? "border-[#811A21] bg-[#fff8f8]"
+                            : "border-border hover:border-[#d8c8ca]"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="space-y-1">
+                            <p className="font-medium">{label}</p>
+                            <p className="text-sm text-[#9A9A9A]">
+                              {variant.soldOut ? "Sold out" : "Available"}
+                            </p>
+                          </div>
+                          <p
+                            className={`text-sm font-medium ${
+                              variant.soldOut ? "text-[#9A9A9A]" : ""
+                            }`}
+                          >
+                            {variant.soldOut ? "—" : formatProductPrice(variant.price)}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+
             {/* Quantity Selector */}
-            {!product.soldOut && (
+            {!activeSoldOut && (
               <div className="animate-content">
                 <h3 className="text-sm font-medium mb-3">Quantity</h3>
                 <div className="flex items-center gap-4">
@@ -315,7 +386,7 @@ export default function ProductClient({
             )}
 
             {/* Add to Cart Button */}
-            {!product.soldOut && (
+            {!activeSoldOut && (
               <div className="animate-content flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={handleAddToCart}
@@ -332,10 +403,12 @@ export default function ProductClient({
               </div>
             )}
 
-            {product.soldOut && (
+            {activeSoldOut && (
               <div className="animate-content">
                 <p className="text-sm text-[#9A9A9A]">
-                  This product is currently out of stock.
+                  {selectedVariantTitle
+                    ? `The ${selectedVariantTitle} option is currently out of stock.`
+                    : "This product is currently out of stock."}
                 </p>
               </div>
             )}
@@ -389,6 +462,13 @@ export default function ProductClient({
                           </span>
                         </div>
                       )}
+                      {recProduct.variantCount > 1 ? (
+                        <div className="absolute top-2 right-2">
+                          <span className="text-[10px] font-semibold tracking-widest uppercase px-2 py-1 border border-[#d8c8ca] bg-background/90 text-foreground backdrop-blur-sm">
+                            {recProduct.variantCount} options
+                          </span>
+                        </div>
+                      ) : null}
                     </div>
 
                     <div className="space-y-1">

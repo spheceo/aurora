@@ -1,6 +1,13 @@
 import { z } from "zod";
 import { shopifyFetch } from "./shopifyFetch";
 
+const ProductVariantSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    price: z.string(),
+    soldOut: z.boolean(),
+})
+
 export const ProductSchema = z.object({
     id: z.string(),
     variantId: z.string(),
@@ -8,6 +15,9 @@ export const ProductSchema = z.object({
     title: z.string(),
     description: z.string(),
     price: z.string(),
+    variantCount: z.number(),
+    selectedVariantTitle: z.string().optional(),
+    variants: z.array(ProductVariantSchema),
     soldOut: z.boolean(),
     collections: z.array(z.object({
       id: z.string(),
@@ -37,11 +47,16 @@ const PRODUCTS_QUERY = `query Products($first: Int!, $query: String) {
               currencyCode
             }
           }
-          variants(first: 1) {
+          variants(first: 20) {
             edges {
               node {
                 id
+                title
                 availableForSale
+                price {
+                  amount
+                  currencyCode
+                }
               }
             }
           }
@@ -80,11 +95,16 @@ const PRODUCT_BY_ID_QUERY = `query ProductById($id: ID!) {
           currencyCode
         }
       }
-      variants(first: 1) {
+      variants(first: 20) {
         edges {
           node {
             id
+            title
             availableForSale
+            price {
+              amount
+              currencyCode
+            }
           }
         }
       }
@@ -120,6 +140,23 @@ function buildGid(numericId: number): string {
     return `gid://shopify/Product/${numericId}`;
 }
 
+function normalizeVariantTitle(title?: string | null) {
+    return title === "Default Title" ? undefined : title || undefined;
+}
+
+function mapVariants(node: any) {
+    return (node.variants?.edges || []).map((variantEdge: any) => ({
+      id: variantEdge.node.id,
+      title: variantEdge.node.title,
+      price: `${variantEdge.node.price?.amount} ${variantEdge.node.price?.currencyCode}`,
+      soldOut: !(variantEdge.node.availableForSale ?? true),
+    }));
+}
+
+function selectDefaultVariant(variants: Array<z.infer<typeof ProductVariantSchema>>) {
+    return variants.find((variant) => !variant.soldOut) || variants[0];
+}
+
 export async function getProducts({ first = 250, query }: { first?: number; query?: string } = {}) {
     const res = await shopifyFetch({
       query: PRODUCTS_QUERY,
@@ -130,16 +167,20 @@ export async function getProducts({ first = 250, query }: { first?: number; quer
     const edges = res.body?.data?.products?.edges || []
     const products = edges.map((edge: any) => {
       const node = edge.node
-      const variant = node.variants?.edges?.[0]?.node
+      const variants = mapVariants(node)
+      const defaultVariant = selectDefaultVariant(variants)
       const numericId = extractNumericId(node.id)
       return {
         id: node.id,
-        variantId: variant?.id || node.id,
+        variantId: defaultVariant?.id || node.id,
         numericId,
         title: node.title,
         description: node.description || '',
         price: `${node.priceRange?.minVariantPrice?.amount} ${node.priceRange?.minVariantPrice?.currencyCode}`,
-        soldOut: !(variant?.availableForSale ?? node.availableForSale ?? true),
+        variantCount: variants.length,
+        selectedVariantTitle: normalizeVariantTitle(defaultVariant?.title),
+        variants,
+        soldOut: defaultVariant ? defaultVariant.soldOut : !(node.availableForSale ?? true),
         collections: node.collections?.edges?.map((collectionEdge: any) => ({
           id: collectionEdge.node.id,
           title: collectionEdge.node.title,
@@ -170,16 +211,20 @@ export async function getProductById(numericId: number) {
       return null
     }
 
-    const variant = node.variants?.edges?.[0]?.node
+    const variants = mapVariants(node)
+    const defaultVariant = selectDefaultVariant(variants)
 
     return {
       id: node.id,
-      variantId: variant?.id || node.id,
+      variantId: defaultVariant?.id || node.id,
       numericId,
       title: node.title,
       description: node.description || '',
       price: `${node.priceRange?.minVariantPrice?.amount} ${node.priceRange?.minVariantPrice?.currencyCode}`,
-      soldOut: !(variant?.availableForSale ?? node.availableForSale ?? true),
+      variantCount: variants.length,
+      selectedVariantTitle: normalizeVariantTitle(defaultVariant?.title),
+      variants,
+      soldOut: defaultVariant ? defaultVariant.soldOut : !(node.availableForSale ?? true),
       collections: node.collections?.edges?.map((collectionEdge: any) => ({
         id: collectionEdge.node.id,
         title: collectionEdge.node.title,

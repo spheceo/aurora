@@ -76,7 +76,7 @@ export default function Cart() {
             {/* Items */}
             <div className="max-h-[55dvh] md:max-h-80 overflow-y-auto">
               {items.map((item, index) => (
-                <div key={item.id} className={`px-3 md:px-4 py-3 md:py-4 ${index !== items.length - 1 ? 'border-b border-border' : ''}`}>
+                <div key={item.variantId} className={`px-3 md:px-4 py-3 md:py-4 ${index !== items.length - 1 ? 'border-b border-border' : ''}`}>
                   <div className="flex gap-3">
                     {/* Product Image */}
                     <div className="w-16 h-16 md:w-20 md:h-20 relative overflow-hidden bg-secondary/30 shrink-0">
@@ -91,6 +91,11 @@ export default function Cart() {
                     <div className="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
                         <h4 className="font-medium text-[10px] md:text-xs truncate uppercase tracking-wide text-foreground">{item.title}</h4>
+                        {item.selectedVariantTitle ? (
+                          <p className="text-[10px] md:text-xs text-[#9A9A9A] mt-0.5">
+                            {item.selectedVariantTitle}
+                          </p>
+                        ) : null}
                         <p className="text-[10px] md:text-xs text-[#9A9A9A] mt-0.5">{formatProductPrice(item.price)}</p>
                       </div>
 
@@ -98,21 +103,21 @@ export default function Cart() {
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
                             className="w-6 h-6 border border-border flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer"
                           >
                             <FiMinus className="w-3 h-3 text-foreground" />
                           </button>
                           <span className="text-xs w-8 text-center font-medium text-foreground">{item.quantity}</span>
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
                             className="w-6 h-6 border border-border flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer"
                           >
                             <FiPlus className="w-3 h-3 text-foreground" />
                           </button>
                         </div>
                         <button
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeItem(item.variantId)}
                           className="text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer"
                         >
                           <FiTrash2 className="w-3.5 h-3.5" />

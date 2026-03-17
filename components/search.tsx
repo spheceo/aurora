@@ -209,6 +209,13 @@ export default function Search() {
                           </span>
                         </div>
                       )}
+                      {product.variantCount > 1 && (
+                        <div className="absolute top-2 right-2">
+                          <span className="text-[10px] font-semibold tracking-widest uppercase px-2 py-1 border border-[#d8c8ca] bg-background/90 text-foreground backdrop-blur-sm">
+                            {product.variantCount} options
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Product Info */}

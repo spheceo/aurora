@@ -58,6 +58,13 @@ export default async function SignaturePicks() {
                     <div className="w-16 h-16 bg-border/50" />
                   </div>
                 )}
+                {product.variantCount > 1 ? (
+                  <div className="absolute top-3 right-3">
+                    <span className="text-[10px] font-semibold tracking-widest uppercase px-2 py-1 border border-[#d8c8ca] bg-background/90 text-foreground backdrop-blur-sm">
+                      {product.variantCount} options
+                    </span>
+                  </div>
+                ) : null}
               </div>
 
               <div className="space-y-2">

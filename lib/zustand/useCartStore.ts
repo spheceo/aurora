@@ -10,8 +10,8 @@ type CartItem = Product & { quantity: number };
 type CartStore = {
   items: CartItem[];
   addItem: (product: Product) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeItem: (variantId: string) => void;
+  updateQuantity: (variantId: string, quantity: number) => void;
   clearCart: () => void;
 };
 
@@ -21,11 +21,11 @@ export const useCartStore = create<CartStore>()(
       items: [],
       addItem: (product) => {
         const items = get().items;
-        const existingItem = items.find((item) => item.id === product.id);
+        const existingItem = items.find((item) => item.variantId === product.variantId);
         if (existingItem) {
           set({
             items: items.map((item) =>
-              item.id === product.id
+              item.variantId === product.variantId
                 ? { ...item, quantity: item.quantity + 1 }
                 : item,
             ),
@@ -34,17 +34,17 @@ export const useCartStore = create<CartStore>()(
           set({ items: [...items, { ...product, quantity: 1 }] });
         }
       },
-      removeItem: (productId) => {
-        set({ items: get().items.filter((item) => item.id !== productId) });
+      removeItem: (variantId) => {
+        set({ items: get().items.filter((item) => item.variantId !== variantId) });
       },
-      updateQuantity: (productId, quantity) => {
+      updateQuantity: (variantId, quantity) => {
         if (quantity <= 0) {
-          get().removeItem(productId);
+          get().removeItem(variantId);
           return;
         }
         set({
           items: get().items.map((item) =>
-            item.id === productId ? { ...item, quantity } : item,
+            item.variantId === variantId ? { ...item, quantity } : item,
           ),
         });
       },
