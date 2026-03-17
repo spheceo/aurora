@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import type { z } from "zod";
 import Cart from "@/components/cart";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/custom-dialog";
 import { toast } from "@/components/ui/custom-toast";
 import { formatProductPrice } from "@/lib/currency";
 import { api } from "@/lib/orpc";
@@ -27,7 +28,7 @@ export default function ProductClient({
   const [quantity, setQuantity] = useState(1);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
 
-  const mainImageRef = useRef<HTMLDivElement>(null);
+  const mainImageRef = useRef<HTMLButtonElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const thumbsRef = useRef<HTMLDivElement>(null);
 
@@ -235,34 +236,88 @@ export default function ProductClient({
           {/* Images */}
           <div className="lg:col-span-5 space-y-4">
             {/* Main Image */}
-            <div
-              ref={mainImageRef}
-              className="relative aspect-square overflow-hidden bg-secondary/30 group"
-            >
-              {images[selectedImageIndex]?.url ? (
-                <Image
-                  src={images[selectedImageIndex].url}
-                  alt={images[selectedImageIndex].altText || product.title}
-                  fill
-                  className={`object-cover transition-all duration-500 ${
-                    product.soldOut ? "opacity-30" : "group-hover:scale-105"
-                  }`}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-border/50" />
-                </div>
-              )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <button
+                  ref={mainImageRef}
+                  type="button"
+                  className="relative aspect-square w-full overflow-hidden bg-secondary/30 group cursor-zoom-in"
+                >
+                  {images[selectedImageIndex]?.url ? (
+                    <Image
+                      src={images[selectedImageIndex].url}
+                      alt={images[selectedImageIndex].altText || product.title}
+                      fill
+                      className={`object-cover transition-all duration-500 ${
+                        product.soldOut ? "opacity-30" : "group-hover:scale-105"
+                      }`}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-border/50" />
+                    </div>
+                  )}
 
-              {/* Sold Out Badge */}
-              {product.soldOut && (
-                <div className="absolute top-4 left-4">
-                  <span className="text-xs font-semibold tracking-widest uppercase px-3 py-1.5 bg-background/80 backdrop-blur-sm">
-                    Sold Out
-                  </span>
+                  {product.soldOut && (
+                    <div className="absolute top-4 left-4">
+                      <span className="text-xs font-semibold tracking-widest uppercase px-3 py-1.5 bg-background/80 backdrop-blur-sm">
+                        Sold Out
+                      </span>
+                    </div>
+                  )}
+                </button>
+              </DialogTrigger>
+
+              <DialogContent
+                className="max-w-none p-4 md:p-6 bg-background"
+                style={{
+                  width: "min(90vw, 1120px)",
+                  maxWidth: "min(90vw, 1120px)",
+                }}
+              >
+                <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+                  {hasMultipleImages ? (
+                    <div className="flex md:flex-col gap-3 md:w-24 shrink-0 overflow-x-auto md:overflow-y-auto md:max-h-[72vh] pr-1">
+                      {images.map((image, index) => (
+                        <button
+                          key={image.id || index}
+                          type="button"
+                          onClick={() => setSelectedImageIndex(index)}
+                          className={`relative w-20 h-20 md:w-24 md:h-24 flex-shrink-0 overflow-hidden bg-secondary/30 border transition-colors cursor-pointer ${
+                            selectedImageIndex === index
+                              ? "border-foreground"
+                              : "border-border hover:border-foreground/50"
+                          }`}
+                        >
+                          <Image
+                            src={image.url}
+                            alt={image.altText || `${product.title} ${index + 1}`}
+                            fill
+                            className="object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+
+                  <div className="relative flex-1 h-[60vh] md:h-[72vh] bg-secondary/20">
+                    {images[selectedImageIndex]?.url ? (
+                      <Image
+                        src={images[selectedImageIndex].url}
+                        alt={images[selectedImageIndex].altText || product.title}
+                        fill
+                        className="object-contain"
+                        sizes="100vw"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full bg-border/50" />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
-            </div>
+              </DialogContent>
+            </Dialog>
 
             {/* Thumbnail Images */}
             {hasMultipleImages && (
