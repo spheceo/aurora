@@ -1,0 +1,22 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "globalEnv": [
+    "SHOPIFY_TOKEN",
+    "SHOPIFY_DOMAIN",
+    "RESEND_API_KEY",
+    "ADMIN_NOTIFICATION_EMAIL",
+    "EMAIL_SENDER_DOMAIN",
+    "APP_URL"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "lint": {},
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

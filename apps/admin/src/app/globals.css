@@ -1,0 +1,16 @@
+:root {
+  color-scheme: light;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #faf9f6;
+  color: #20201d;
+}
+
+main {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
