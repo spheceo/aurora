@@ -1,18 +1,31 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { parseAsString, useQueryState } from "nuqs";
-import { LuChevronDown, LuSearch, LuX } from "react-icons/lu";
-import { api } from "@/lib/orpc";
-import { z } from "zod";
-import { ProductsResponseSchema } from "@/lib/products";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/custom-dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/custom-dropdown";
-import { useCartStore } from "@/lib/zustand/useCartStore";
-import { toast } from "@/components/ui/custom-toast";
 import Image from "next/image";
 import Link from "next/link";
-import { currency, formatProductPrice } from "@/lib/currency";
+import { parseAsString, useQueryState } from "nuqs";
+import { useEffect, useRef, useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
+import { LuChevronDown, LuSearch, LuX } from "react-icons/lu";
+import type { z } from "zod";
+import { toast } from "@/components/ui/custom-toast";
+import { currency, formatProductPrice } from "@/lib/currency";
+import { api } from "@/lib/orpc";
+import type { ProductsResponseSchema } from "@/lib/products";
+import { useCartStore } from "@/lib/zustand/useCartStore";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/custom-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/custom-dropdown";
 
 type Product = z.infer<typeof ProductsResponseSchema>[number];
 
@@ -33,15 +46,23 @@ const getNumericPrice = (priceStr: string): number => {
 
 export default function Search() {
   const [query, setQuery] = useQueryState("q", parseAsString.withDefault(""));
-  const [priceRangeParam, setPriceRangeParam] = useQueryState("p", parseAsString.withDefault(""));
+  const [priceRangeParam, setPriceRangeParam] = useQueryState(
+    "p",
+    parseAsString.withDefault(""),
+  );
   const [open, setOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const { addItem } = useCartStore();
+  const pricingLocked = products[0]?.pricingLocked ?? true;
 
   // Derive price range from param or default to "all"
-  const priceRange: PriceRange = (["all", "0-150", "150-300", "300-500"].includes(priceRangeParam) ? priceRangeParam : "all") as PriceRange;
+  const priceRange: PriceRange = (
+    ["all", "0-150", "150-300", "300-500"].includes(priceRangeParam)
+      ? priceRangeParam
+      : "all"
+  ) as PriceRange;
 
   const setPriceRange = (value: PriceRange) => {
     setPriceRangeParam(value === "all" ? null : value);
@@ -75,13 +96,15 @@ export default function Search() {
     if (open && !hasSearched) {
       const trimmedQuery = query.trim();
       // On initial load with no query, show 5 products. If there's a query, show all.
-      api.products({
-        first: trimmedQuery ? undefined : 5,
-        query: trimmedQuery || undefined
-      }).then((data) => {
-        setProducts(data);
-        setHasSearched(true);
-      });
+      api
+        .products({
+          first: trimmedQuery ? undefined : 5,
+          query: trimmedQuery || undefined,
+        })
+        .then((data) => {
+          setProducts(data);
+          setHasSearched(true);
+        });
     }
   }, [open]);
 
@@ -95,12 +118,14 @@ export default function Search() {
     debounceRef.current = setTimeout(() => {
       const trimmedQuery = query.trim();
       // When searching, show all results. When query is empty, show 5
-      api.products({
-        first: trimmedQuery ? undefined : 5,
-        query: trimmedQuery || undefined
-      }).then((data) => {
-        setProducts(data);
-      });
+      api
+        .products({
+          first: trimmedQuery ? undefined : 5,
+          query: trimmedQuery || undefined,
+        })
+        .then((data) => {
+          setProducts(data);
+        });
     }, 50);
 
     return () => {
@@ -122,14 +147,18 @@ export default function Search() {
       >
         <DialogHeader className="sr-only">
           <DialogTitle>Search products</DialogTitle>
-          <DialogDescription>Find items available in the store.</DialogDescription>
+          <DialogDescription>
+            Find items available in the store.
+          </DialogDescription>
         </DialogHeader>
 
         {/* Sticky Header and Controls */}
         <div className="sticky top-0 z-10 bg-background">
           {/* Header */}
           <div className="border-b border-border px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
-            <h2 className="text-xs font-medium uppercase tracking-wider text-foreground">Search Products</h2>
+            <h2 className="text-xs font-medium uppercase tracking-wider text-foreground">
+              Search Products
+            </h2>
             <DialogClose className="hover:opacity-70 transition-opacity outline-none cursor-pointer">
               <LuX className="w-4 h-4 text-foreground" />
             </DialogClose>
@@ -137,38 +166,45 @@ export default function Search() {
 
           {/* Search Controls */}
           <div className="px-4 md:px-6 py-3 md:py-4 border-b border-border">
-          <div className="flex flex-col sm:flex-row gap-2">
-            <div className="px-4 py-2.5 border border-border flex items-center gap-3 flex-1">
-              <LuSearch className="text-[#9A9A9A] w-4 h-4" />
-              <input
-                placeholder="Search..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="placeholder:text-[#9A9A9A] outline-none w-full text-[16px] sm:text-sm bg-transparent text-foreground"
-              />
-            </div>
-            {/* Price Range Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="px-4 py-2.5 border border-border flex items-center gap-2 hover:bg-secondary transition-colors whitespace-nowrap cursor-pointer text-xs text-foreground">
-                  <span>{priceRanges.find((r) => r.value === priceRange)?.label}</span>
-                  <LuChevronDown className="w-3 h-3 text-[#9A9A9A]" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-background border-border rounded-none min-w-[200px]">
-                {priceRanges.map((range) => (
-                  <DropdownMenuItem
-                    key={range.value}
-                    onClick={() => setPriceRange(range.value)}
-                    className={`text-foreground hover:bg-secondary cursor-pointer rounded-none ${priceRange === range.value ? "bg-secondary" : ""}`}
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="px-4 py-2.5 border border-border flex items-center gap-3 flex-1">
+                <LuSearch className="text-[#9A9A9A] w-4 h-4" />
+                <input
+                  placeholder="Search..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="placeholder:text-[#9A9A9A] outline-none w-full text-[16px] sm:text-sm bg-transparent text-foreground"
+                />
+              </div>
+              {/* Price Range Dropdown */}
+              {!pricingLocked ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="px-4 py-2.5 border border-border flex items-center gap-2 hover:bg-secondary transition-colors whitespace-nowrap cursor-pointer text-xs text-foreground">
+                      <span>
+                        {priceRanges.find((r) => r.value === priceRange)?.label}
+                      </span>
+                      <LuChevronDown className="w-3 h-3 text-[#9A9A9A]" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="bg-background border-border rounded-none min-w-[200px]"
                   >
-                    {range.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                    {priceRanges.map((range) => (
+                      <DropdownMenuItem
+                        key={range.value}
+                        onClick={() => setPriceRange(range.value)}
+                        className={`text-foreground hover:bg-secondary cursor-pointer rounded-none ${priceRange === range.value ? "bg-secondary" : ""}`}
+                      >
+                        {range.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : null}
+            </div>
           </div>
-        </div>
         </div>
 
         {/* Results */}
@@ -181,11 +217,16 @@ export default function Search() {
           ) : filteredProducts?.length ? (
             <>
               <p className="text-[10px] text-[#9A9A9A] mb-4 uppercase tracking-wider">
-                {filteredProducts.length} {filteredProducts.length === 1 ? 'Result' : 'Results'}
+                {filteredProducts.length}{" "}
+                {filteredProducts.length === 1 ? "Result" : "Results"}
               </p>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
                 {filteredProducts.map((product) => (
-                  <Link key={product.id} href={`/product/${product.numericId}`} className="group cursor-pointer">
+                  <Link
+                    key={product.id}
+                    href={`/product/${product.numericId}`}
+                    className="group cursor-pointer"
+                  >
                     {/* Product Image */}
                     <div className="aspect-square relative overflow-hidden bg-secondary/30 mb-2">
                       {product.assets[0]?.url ? (
@@ -224,11 +265,17 @@ export default function Search() {
                         <h3 className="text-xs font-medium leading-tight truncate uppercase tracking-wide text-foreground">
                           {product.title}
                         </h3>
-                        <p className={`text-xs font-medium whitespace-nowrap ${product.soldOut ? "text-[#9A9A9A]" : "text-foreground"}`}>
-                          {product.soldOut ? "—" : formatProductPrice(product.price)}
+                        <p
+                          className={`text-xs font-medium whitespace-nowrap ${product.soldOut ? "text-[#9A9A9A]" : "text-foreground"}`}
+                        >
+                          {product.soldOut
+                            ? "—"
+                            : product.pricingLocked
+                              ? "Sign in for pricing"
+                              : formatProductPrice(product.price)}
                         </p>
                       </div>
-                      {!product.soldOut && (
+                      {!product.soldOut && !product.pricingLocked && (
                         <button
                           onClick={(e) => {
                             e.preventDefault();

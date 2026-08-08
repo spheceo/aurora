@@ -1,18 +1,52 @@
 "use client";
-import { FiShoppingCart, FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/custom-dropdown";
-import { useCartStore } from "@/lib/zustand/useCartStore";
-import { api } from "@/lib/orpc";
-import { toast } from "@/components/ui/custom-toast";
-import { currency, formatProductPrice, getProductPriceAmount } from "@/lib/currency";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { FiMinus, FiPlus, FiShoppingCart, FiTrash2 } from "react-icons/fi";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/custom-dropdown";
+import { toast } from "@/components/ui/custom-toast";
+import {
+  currency,
+  formatProductPrice,
+  getProductPriceAmount,
+} from "@/lib/currency";
+import { api } from "@/lib/orpc";
+import { useCartStore } from "@/lib/zustand/useCartStore";
 
 export default function Cart() {
   const { items, removeItem, updateQuantity, clearCart } = useCartStore();
+  const [pricingApproved, setPricingApproved] = useState(false);
+  const [accessChecked, setAccessChecked] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    api
+      .pricingAccess()
+      .then((access) => {
+        if (active) setPricingApproved(access.approved);
+      })
+      .catch(() => {
+        if (active) setPricingApproved(false);
+      })
+      .finally(() => {
+        if (active) setAccessChecked(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleCheckout = () => {
     if (items.length === 0) return;
-    
+    if (!pricingApproved) {
+      toast("Sign in with an approved wholesale account to checkout");
+      return;
+    }
+
     // Check if any items are missing variantId (old cart items)
     const hasInvalidItems = items.some((item) => !item.variantId);
     if (hasInvalidItems) {
@@ -25,18 +59,15 @@ export default function Cart() {
       quantity: item.quantity,
     }));
 
-    toast.promise(
-      api.checkout({ lineItems }),
-      {
-        loading: "Creating checkout...",
-        success: (data) => {
-          clearCart();
-          window.location.href = data.checkoutUrl;
-          return "Redirecting to checkout...";
-        },
-        error: "Failed to create checkout",
-      }
-    );
+    toast.promise(api.checkout({ lineItems }), {
+      loading: "Creating checkout...",
+      success: (data) => {
+        clearCart();
+        window.location.href = data.checkoutUrl;
+        return "Redirecting to checkout...";
+      },
+      error: "Failed to create checkout",
+    });
   };
 
   // Calculate total price
@@ -53,16 +84,29 @@ export default function Cart() {
         <button className="cursor-pointer outline-none relative">
           <FiShoppingCart />
           {itemCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-background text-foreground border border-foreground text-[10px] w-4 h-4 flex items-center justify-center font-medium rounded-full">{itemCount}</span>
+            <span className="absolute -top-2 -right-2 bg-background text-foreground border border-foreground text-[10px] w-4 h-4 flex items-center justify-center font-medium rounded-full">
+              {itemCount}
+            </span>
           )}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[min(24rem,calc(100vw-1rem))] max-h-[calc(100dvh-5rem)] overflow-hidden p-0 bg-background border-border rounded-none" align="end" sideOffset={8}>
+      <DropdownMenuContent
+        className="w-[min(24rem,calc(100vw-1rem))] max-h-[calc(100dvh-5rem)] overflow-hidden p-0 bg-background border-border rounded-none"
+        align="end"
+        sideOffset={8}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-3 md:px-4 py-2 md:py-3 border-b border-border">
-          <h3 className="text-sm font-medium uppercase tracking-wider text-foreground">Cart ({itemCount})</h3>
+          <h3 className="text-sm font-medium uppercase tracking-wider text-foreground">
+            Cart ({itemCount})
+          </h3>
           {items.length > 0 && (
-            <button onClick={clearCart} className="text-[10px] text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer uppercase tracking-wider">Clear All</button>
+            <button
+              onClick={clearCart}
+              className="text-[10px] text-[#9A9A9A] hover:text-foreground transition-colors cursor-pointer uppercase tracking-wider"
+            >
+              Clear All
+            </button>
           )}
         </div>
 
@@ -76,12 +120,20 @@ export default function Cart() {
             {/* Items */}
             <div className="max-h-[55dvh] md:max-h-80 overflow-y-auto">
               {items.map((item, index) => (
-                <div key={item.variantId} className={`px-3 md:px-4 py-3 md:py-4 ${index !== items.length - 1 ? 'border-b border-border' : ''}`}>
+                <div
+                  key={item.variantId}
+                  className={`px-3 md:px-4 py-3 md:py-4 ${index !== items.length - 1 ? "border-b border-border" : ""}`}
+                >
                   <div className="flex gap-3">
                     {/* Product Image */}
                     <div className="w-16 h-16 md:w-20 md:h-20 relative overflow-hidden bg-secondary/30 shrink-0">
                       {item.assets[0]?.url ? (
-                        <Image src={item.assets[0].url} alt={item.title} fill className="object-cover" />
+                        <Image
+                          src={item.assets[0].url}
+                          alt={item.title}
+                          fill
+                          className="object-cover"
+                        />
                       ) : (
                         <div className="w-full h-full bg-secondary/50" />
                       )}
@@ -90,27 +142,39 @@ export default function Cart() {
                     {/* Product Info */}
                     <div className="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
-                        <h4 className="font-medium text-[10px] md:text-xs truncate uppercase tracking-wide text-foreground">{item.title}</h4>
+                        <h4 className="font-medium text-[10px] md:text-xs truncate uppercase tracking-wide text-foreground">
+                          {item.title}
+                        </h4>
                         {item.selectedVariantTitle ? (
                           <p className="text-[10px] md:text-xs text-[#9A9A9A] mt-0.5">
                             {item.selectedVariantTitle}
                           </p>
                         ) : null}
-                        <p className="text-[10px] md:text-xs text-[#9A9A9A] mt-0.5">{formatProductPrice(item.price)}</p>
+                        <p className="text-[10px] md:text-xs text-[#9A9A9A] mt-0.5">
+                          {pricingApproved
+                            ? formatProductPrice(item.price)
+                            : "Pricing locked"}
+                        </p>
                       </div>
 
                       {/* Quantity Controls */}
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
+                            onClick={() =>
+                              updateQuantity(item.variantId, item.quantity - 1)
+                            }
                             className="w-6 h-6 border border-border flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer"
                           >
                             <FiMinus className="w-3 h-3 text-foreground" />
                           </button>
-                          <span className="text-xs w-8 text-center font-medium text-foreground">{item.quantity}</span>
+                          <span className="text-xs w-8 text-center font-medium text-foreground">
+                            {item.quantity}
+                          </span>
                           <button
-                            onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
+                            onClick={() =>
+                              updateQuantity(item.variantId, item.quantity + 1)
+                            }
                             className="w-6 h-6 border border-border flex items-center justify-center hover:bg-secondary transition-colors cursor-pointer"
                           >
                             <FiPlus className="w-3 h-3 text-foreground" />
@@ -132,14 +196,23 @@ export default function Cart() {
             {/* Footer */}
             <div className="border-t border-border px-3 md:px-4 py-3 md:py-4">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs uppercase tracking-wider font-medium text-foreground">Total</span>
-                <span className="font-medium text-base text-foreground">{currency}{total.toFixed(2)}</span>
+                <span className="text-xs uppercase tracking-wider font-medium text-foreground">
+                  Total
+                </span>
+                <span className="font-medium text-base text-foreground">
+                  {pricingApproved ? `${currency}${total.toFixed(2)}` : "—"}
+                </span>
               </div>
               <button
                 onClick={handleCheckout}
-                className="w-full bg-foreground text-background py-3 text-xs font-medium hover:bg-foreground/90 transition-colors cursor-pointer uppercase tracking-wider"
+                disabled={!pricingApproved || !accessChecked}
+                className="w-full bg-foreground text-background py-3 text-xs font-medium hover:bg-foreground/90 transition-colors cursor-pointer uppercase tracking-wider disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Checkout
+                {!accessChecked
+                  ? "Checking access…"
+                  : pricingApproved
+                    ? "Checkout"
+                    : "Sign in for pricing"}
               </button>
             </div>
           </>

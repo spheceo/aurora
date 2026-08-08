@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import AccountControl from "@/components/account-control";
 import Cart from "@/components/cart";
 
 export default function AboutPage() {
@@ -16,7 +17,10 @@ export default function AboutPage() {
               className="rounded-lg"
             />
           </Link>
-          <Cart />
+          <div className="flex items-center gap-4">
+            <Cart />
+            <AccountControl />
+          </div>
         </div>
       </nav>
 
@@ -43,18 +47,18 @@ export default function AboutPage() {
             </h1>
             <div className="mt-5 space-y-4 text-sm leading-relaxed text-[#65595a]">
               <p>
-                At Aurora, we believe in the refined power of energy,
-                intention, and elevated living. Our collection extends beyond
-                natural crystals to include a curated selection of energy tools
-                designed to uplift your frequency and support intentional
-                wellness practices.
+                At Aurora, we believe in the refined power of energy, intention,
+                and elevated living. Our collection extends beyond natural
+                crystals to include a curated selection of energy tools designed
+                to uplift your frequency and support intentional wellness
+                practices.
               </p>
               <p>
-                Each piece is thoughtfully selected for its rarity, quality,
-                and energetic presence. From statement crystals to
-                transformative tools, every item is chosen to enhance your
-                space, encourage balance, and promote clarity of mind and calm
-                within your environment.
+                Each piece is thoughtfully selected for its rarity, quality, and
+                energetic presence. From statement crystals to transformative
+                tools, every item is chosen to enhance your space, encourage
+                balance, and promote clarity of mind and calm within your
+                environment.
               </p>
               <p>
                 We view wellness as a lifestyle, one rooted in alignment,

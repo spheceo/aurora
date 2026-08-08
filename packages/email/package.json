@@ -1,0 +1,24 @@
+{
+  "name": "@aurora/email",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./approval": "./src/approval.tsx"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-email/components": "^1.0.7",
+    "react": "19.2.3",
+    "resend": "^6.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
+}

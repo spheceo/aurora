@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import AccountControl from "@/components/account-control";
 import Cart from "@/components/cart";
 
 export default function TermsPage() {
@@ -22,7 +23,10 @@ export default function TermsPage() {
               className="rounded-lg"
             />
           </Link>
-          <Cart />
+          <div className="flex items-center gap-4">
+            <Cart />
+            <AccountControl />
+          </div>
         </div>
       </nav>
 

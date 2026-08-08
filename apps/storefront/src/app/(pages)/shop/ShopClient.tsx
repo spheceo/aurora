@@ -8,6 +8,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { LuArrowUpDown, LuChevronDown, LuSearch, LuX } from "react-icons/lu";
 import type { z } from "zod";
+import AccountControl from "@/components/account-control";
 import Cart from "@/components/cart";
 import {
   DropdownMenu,
@@ -248,6 +249,7 @@ export default function ShopClient({
             </Link>
             <div className="h-4 w-px bg-border hidden sm:block" />
             <Cart />
+            <AccountControl />
           </div>
         </div>
       </nav>
@@ -480,12 +482,14 @@ export default function ShopClient({
                     >
                       {product.soldOut
                         ? "—"
-                        : formatProductPrice(product.price)}
+                        : product.pricingLocked
+                          ? "Sign in for pricing"
+                          : formatProductPrice(product.price)}
                     </p>
                   </div>
 
                   {/* Add to Cart Button */}
-                  {!product.soldOut && (
+                  {!product.soldOut && !product.pricingLocked && (
                     <button
                       onClick={(e) => {
                         e.preventDefault();

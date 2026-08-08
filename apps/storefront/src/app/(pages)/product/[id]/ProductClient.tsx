@@ -5,8 +5,13 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import type { z } from "zod";
+import AccountControl from "@/components/account-control";
 import Cart from "@/components/cart";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/custom-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/custom-dialog";
 import { toast } from "@/components/ui/custom-toast";
 import { formatProductPrice } from "@/lib/currency";
 import { api } from "@/lib/orpc";
@@ -26,7 +31,9 @@ export default function ProductClient({
   const { addItem } = useCartStore();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
+    null,
+  );
 
   const mainImageRef = useRef<HTMLButtonElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -108,13 +115,16 @@ export default function ProductClient({
     product?.variants.find((variant) => variant.id === selectedVariantId) ||
     product?.variants[0];
   const selectedVariantTitle =
-    selectedVariant?.title === "Default Title" ? undefined : selectedVariant?.title;
+    selectedVariant?.title === "Default Title"
+      ? undefined
+      : selectedVariant?.title;
   const hasMultipleVariants = (product?.variantCount || 0) > 1;
   const activePrice = selectedVariant?.price || product?.price || "";
   const activeSoldOut = selectedVariant?.soldOut ?? product?.soldOut ?? true;
+  const pricingLocked = product?.pricingLocked ?? true;
 
   const handleAddToCart = () => {
-    if (product && selectedVariant && !activeSoldOut) {
+    if (product && selectedVariant && !activeSoldOut && !pricingLocked) {
       const productForCart = {
         ...product,
         variantId: selectedVariant.id,
@@ -133,7 +143,7 @@ export default function ProductClient({
   };
 
   const handleCheckout = () => {
-    if (product && selectedVariant && !activeSoldOut) {
+    if (product && selectedVariant && !activeSoldOut && !pricingLocked) {
       const lineItems = [
         {
           variantId: selectedVariant.id,
@@ -203,6 +213,7 @@ export default function ProductClient({
             </Link>
             <div className="h-4 w-px bg-border hidden sm:block" />
             <Cart />
+            <AccountControl />
           </div>
         </div>
       </nav>
@@ -291,7 +302,9 @@ export default function ProductClient({
                         >
                           <Image
                             src={image.url}
-                            alt={image.altText || `${product.title} ${index + 1}`}
+                            alt={
+                              image.altText || `${product.title} ${index + 1}`
+                            }
                             fill
                             className="object-cover"
                           />
@@ -304,7 +317,9 @@ export default function ProductClient({
                     {images[selectedImageIndex]?.url ? (
                       <Image
                         src={images[selectedImageIndex].url}
-                        alt={images[selectedImageIndex].altText || product.title}
+                        alt={
+                          images[selectedImageIndex].altText || product.title
+                        }
                         fill
                         className="object-contain"
                         sizes="100vw"
@@ -358,11 +373,16 @@ export default function ProductClient({
                   activeSoldOut ? "text-[#9A9A9A]" : ""
                 }`}
               >
-                {activeSoldOut ? "—" : formatProductPrice(activePrice)}
+                {activeSoldOut
+                  ? "—"
+                  : pricingLocked
+                    ? "Sign in for pricing"
+                    : formatProductPrice(activePrice)}
               </p>
               {hasMultipleVariants ? (
                 <p className="text-sm text-[#9A9A9A]">
-                  Multiple pack options available. Select a pack below to see the exact price.
+                  Multiple pack options available. Select a pack below to see
+                  the exact price.
                 </p>
               ) : null}
             </div>
@@ -381,7 +401,9 @@ export default function ProductClient({
                   {product.variants.map((variant) => {
                     const isSelected = variant.id === selectedVariant?.id;
                     const label =
-                      variant.title === "Default Title" ? "Standard" : variant.title;
+                      variant.title === "Default Title"
+                        ? "Standard"
+                        : variant.title;
 
                     return (
                       <button
@@ -406,7 +428,11 @@ export default function ProductClient({
                               variant.soldOut ? "text-[#9A9A9A]" : ""
                             }`}
                           >
-                            {variant.soldOut ? "—" : formatProductPrice(variant.price)}
+                            {variant.soldOut
+                              ? "—"
+                              : pricingLocked
+                                ? "Sign in for pricing"
+                                : formatProductPrice(variant.price)}
                           </p>
                         </div>
                       </button>
@@ -417,7 +443,7 @@ export default function ProductClient({
             ) : null}
 
             {/* Quantity Selector */}
-            {!activeSoldOut && (
+            {!activeSoldOut && !pricingLocked && (
               <div className="animate-content">
                 <h3 className="text-sm font-medium mb-3">Quantity</h3>
                 <div className="flex items-center gap-4">
@@ -440,8 +466,19 @@ export default function ProductClient({
               </div>
             )}
 
+            {!activeSoldOut && pricingLocked ? (
+              <div className="animate-content">
+                <Link
+                  href="/account/apply"
+                  className="inline-flex bg-[#811A21] px-6 py-3 text-xs font-semibold tracking-widest uppercase text-white transition-colors hover:bg-[#6f161d]"
+                >
+                  Sign in for pricing
+                </Link>
+              </div>
+            ) : null}
+
             {/* Add to Cart Button */}
-            {!activeSoldOut && (
+            {!activeSoldOut && !pricingLocked && (
               <div className="animate-content flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={handleAddToCart}
@@ -538,7 +575,9 @@ export default function ProductClient({
                         >
                           {recProduct.soldOut
                             ? "—"
-                            : formatProductPrice(recProduct.price)}
+                            : recProduct.pricingLocked
+                              ? "Sign in for pricing"
+                              : formatProductPrice(recProduct.price)}
                         </p>
                       </div>
                     </div>

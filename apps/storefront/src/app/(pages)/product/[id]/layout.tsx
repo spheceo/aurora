@@ -22,7 +22,9 @@ const loadProduct = async (id: string) => {
   return getProductById(numericId);
 };
 
-export async function generateMetadata({ params }: ProductLayoutProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ProductLayoutProps): Promise<Metadata> {
   const { id } = await params;
   const product = await loadProduct(id);
 
@@ -36,7 +38,8 @@ export async function generateMetadata({ params }: ProductLayoutProps): Promise<
   }
 
   const image = product.assets[0]?.url ?? siteConfig.ogImage;
-  const description = product.description || `Shop ${product.title} at Aurora ZA.`;
+  const description =
+    product.description || `Shop ${product.title} at Aurora ZA.`;
 
   return {
     title: `${product.title} Crystal`,
@@ -65,7 +68,10 @@ export async function generateMetadata({ params }: ProductLayoutProps): Promise<
   };
 }
 
-export default async function ProductIdLayout({ children, params }: ProductLayoutProps) {
+export default async function ProductIdLayout({
+  children,
+  params,
+}: ProductLayoutProps) {
   const { id } = await params;
   const product = await loadProduct(id);
 
@@ -84,22 +90,29 @@ export default async function ProductIdLayout({ children, params }: ProductLayou
       "@type": "Brand",
       name: siteConfig.name,
     },
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "ZAR",
-      price: parsePrice(product.price),
-      availability: product.soldOut
-        ? "https://schema.org/OutOfStock"
-        : "https://schema.org/InStock",
-      url: `${siteConfig.url}/product/${product.numericId}`,
-    },
+    ...(product.pricingLocked
+      ? {}
+      : {
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "ZAR",
+            price: parsePrice(product.price),
+            availability: product.soldOut
+              ? "https://schema.org/OutOfStock"
+              : "https://schema.org/InStock",
+            url: `${siteConfig.url}/product/${product.numericId}`,
+          },
+        }),
   };
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Escaping '<' prevents a serialized field from closing the script element.
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productSchema).replace(/</g, "\\u003c"),
+        }}
       />
       {children}
     </>

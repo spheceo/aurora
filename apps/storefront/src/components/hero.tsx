@@ -9,6 +9,7 @@ import Marquee from "react-fast-marquee";
 import { FaArrowRight } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 import { LuMouse } from "react-icons/lu";
+import AccountControl from "./account-control";
 import Cart from "./cart";
 import MobileNav from "./mobile-nav";
 import Search from "./search";
@@ -131,6 +132,7 @@ export default forwardRef(function Hero(
             <div className="flex items-center gap-4">
               <Search />
               <Cart />
+              <AccountControl tone="light" />
               <MobileNav />
             </div>
           </div>
@@ -165,6 +167,7 @@ export default forwardRef(function Hero(
 
               <Search />
               <Cart />
+              <AccountControl tone="light" />
             </div>
           </div>
 

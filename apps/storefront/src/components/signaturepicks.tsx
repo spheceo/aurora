@@ -72,7 +72,9 @@ export default async function SignaturePicks() {
                   {product.title}
                 </h3>
                 <p className="text-sm font-medium">
-                  {formatProductPrice(product.price)}
+                  {product.pricingLocked
+                    ? "Sign in for pricing"
+                    : formatProductPrice(product.price)}
                 </p>
               </div>
             </Link>
